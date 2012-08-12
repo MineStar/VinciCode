@@ -1,0 +1,4 @@
+name: VinciCode
+main: de.minestar.vincicode.core.VinciCodeCore
+version: ${pom.version}
+depend: [MineStarLibrary]
