@@ -18,13 +18,44 @@
 
 package de.minestar.vincicode.core;
 
-import de.minestar.minestarlibrary.AbstractCore;
+import java.util.ArrayList;
+import java.util.List;
 
-public class VinciCodeCore extends AbstractCore {
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.plugin.PluginManager;
+
+import de.minestar.minestarlibrary.AbstractCore;
+import de.minestar.minestarlibrary.bookapi.Book;
+import de.minestar.minestarlibrary.bookapi.CraftBookBuilder;
+
+public class VinciCodeCore extends AbstractCore implements Listener {
 
     public static final String NAME = "VinciCode";
 
     public VinciCodeCore() {
         super(NAME);
+    }
+
+    @Override
+    protected boolean registerEvents(PluginManager pm) {
+        pm.registerEvents(this, this);
+        return true;
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        CraftItemStack book = new CraftItemStack(Material.WRITTEN_BOOK);
+        Book b = new CraftBookBuilder().getBook(book);
+        b.setTitle(ChatColor.GRAY + "GenericTitle");
+        b.setAuthor(ChatColor.DARK_RED + "Administration");
+        List<String> pages = new ArrayList<String>();
+        pages.add(ChatColor.RED + "Willkommen auf " + ChatColor.BLUE + "Minestar.de" + ChatColor.RED + "!");
+        b.setPages(pages);
+        event.getPlayer().setItemInHand(book);
     }
 }
