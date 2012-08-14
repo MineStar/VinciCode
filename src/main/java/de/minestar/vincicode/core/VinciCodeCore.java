@@ -49,7 +49,7 @@ public class VinciCodeCore extends AbstractCore implements Listener {
         pages.add(ChatColor.RED + "Willkommen auf " + ChatColor.BLUE + "Minestar.de" + ChatColor.RED + "!");
         pages.add(ChatColor.RED + "Seite 2");
         pages.add(ChatColor.RED + "Seite 3");
-        MinestarBook myBook = MinestarBook.createBookAndQuill("AUTHOR", "TITLE", pages);
+        MinestarBook myBook = MinestarBook.createWrittenBook("AUTHOR", "TITLE", pages);
         event.getPlayer().setItemInHand(myBook.getBukkitItemStack());
     }
 }
