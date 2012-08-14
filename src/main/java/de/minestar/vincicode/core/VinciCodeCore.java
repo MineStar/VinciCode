@@ -50,12 +50,11 @@ public class VinciCodeCore extends AbstractCore implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         CraftItemStack book = new CraftItemStack(Material.WRITTEN_BOOK);
-        Book b = new CraftBookBuilder().getBook(book);
-        b.setTitle(ChatColor.GRAY + "GenericTitle");
-        b.setAuthor(ChatColor.DARK_RED + "Administration");
         List<String> pages = new ArrayList<String>();
         pages.add(ChatColor.RED + "Willkommen auf " + ChatColor.BLUE + "Minestar.de" + ChatColor.RED + "!");
-        b.setPages(pages);
+        pages.add(ChatColor.RED + "Seite 2");
+        pages.add(ChatColor.RED + "Seite 3");
+        Book myBook = new CraftBookBuilder().getBook(book, "TITLE", "AUTHOR", pages);
         event.getPlayer().setItemInHand(book);
     }
 }
