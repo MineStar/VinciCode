@@ -22,17 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.PluginManager;
 
 import de.minestar.minestarlibrary.AbstractCore;
-import de.minestar.minestarlibrary.bookapi.Book;
-import de.minestar.minestarlibrary.bookapi.CraftBookBuilder;
-
+import de.minestar.minestarlibrary.bookapi.MinestarBook;
 public class VinciCodeCore extends AbstractCore implements Listener {
 
     public static final String NAME = "VinciCode";
@@ -49,12 +45,11 @@ public class VinciCodeCore extends AbstractCore implements Listener {
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        CraftItemStack book = new CraftItemStack(Material.WRITTEN_BOOK);
         List<String> pages = new ArrayList<String>();
         pages.add(ChatColor.RED + "Willkommen auf " + ChatColor.BLUE + "Minestar.de" + ChatColor.RED + "!");
         pages.add(ChatColor.RED + "Seite 2");
         pages.add(ChatColor.RED + "Seite 3");
-        Book myBook = new CraftBookBuilder().getBook(book, "TITLE", "AUTHOR", pages);
-        event.getPlayer().setItemInHand(book);
+        MinestarBook myBook = MinestarBook.createBookAndQuill("AUTHOR", "TITLE", pages);
+        event.getPlayer().setItemInHand(myBook.getBukkitItemStack());
     }
 }
