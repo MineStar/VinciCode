@@ -29,12 +29,24 @@ import org.bukkit.plugin.PluginManager;
 
 import de.minestar.minestarlibrary.AbstractCore;
 import de.minestar.minestarlibrary.bookapi.MinestarBook;
+import de.minestar.minestarlibrary.messages.Message;
+import de.minestar.vincicode.manager.MessageManager;
 public class VinciCodeCore extends AbstractCore implements Listener {
 
     public static final String NAME = "VinciCode";
 
+    public static MessageManager messageManger;
+
     public VinciCodeCore() {
         super(NAME);
+    }
+
+    @Override
+    protected boolean createManager() {
+
+        messageManger = new MessageManager();
+
+        return true;
     }
 
     @Override
@@ -51,5 +63,9 @@ public class VinciCodeCore extends AbstractCore implements Listener {
         pages.add(ChatColor.RED + "Seite 3");
         MinestarBook myBook = MinestarBook.createWrittenBook("AUTHOR", "TITLE", pages);
         event.getPlayer().setItemInHand(myBook.getBukkitItemStack());
+    }
+
+    public static void sendMessage(Message message) {
+        messageManger.handleMessage(message);
     }
 }
