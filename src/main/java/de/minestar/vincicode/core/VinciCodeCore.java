@@ -18,24 +18,20 @@
 
 package de.minestar.vincicode.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.plugin.PluginManager;
+import java.io.File;
 
 import de.minestar.minestarlibrary.AbstractCore;
-import de.minestar.minestarlibrary.bookapi.MinestarBook;
 import de.minestar.minestarlibrary.messages.Message;
+import de.minestar.vincicode.database.DatabaseHandler;
 import de.minestar.vincicode.manager.MessageManager;
-public class VinciCodeCore extends AbstractCore implements Listener {
+
+public class VinciCodeCore extends AbstractCore {
+//public class VinciCodeCore extends AbstractCore implements Listener {
 
     public static final String NAME = "VinciCode";
 
     public static MessageManager messageManger;
+    public static DatabaseHandler dbHandler;
 
     public VinciCodeCore() {
         super(NAME);
@@ -44,26 +40,38 @@ public class VinciCodeCore extends AbstractCore implements Listener {
     @Override
     protected boolean createManager() {
 
+        dbHandler = new DatabaseHandler(NAME, new File(getDataFolder(), "sqlconfig.yml"));
+        if (dbHandler == null || !dbHandler.hasConnection())
+            return false;
+
         messageManger = new MessageManager();
 
         return true;
     }
 
     @Override
-    protected boolean registerEvents(PluginManager pm) {
-        pm.registerEvents(this, this);
-        return true;
-    }
+    protected boolean commonDisable() {
+        if (dbHandler != null)
+            dbHandler.closeConnection();
 
-    @EventHandler
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        List<String> pages = new ArrayList<String>();
-        pages.add(ChatColor.RED + "Willkommen auf " + ChatColor.BLUE + "Minestar.de" + ChatColor.RED + "!");
-        pages.add(ChatColor.RED + "Seite 2");
-        pages.add(ChatColor.RED + "Seite 3");
-        MinestarBook myBook = MinestarBook.createWrittenBook("AUTHOR", "TITLE", pages);
-        event.getPlayer().setItemInHand(myBook.getBukkitItemStack());
+        return !dbHandler.hasConnection();
     }
+//
+//    @Override
+//    protected boolean registerEvents(PluginManager pm) {
+//        pm.registerEvents(this, this);
+//        return true;
+//    }
+
+//    @EventHandler
+//    public void onPlayerRespawn(PlayerRespawnEvent event) {
+//        List<String> pages = new ArrayList<String>();
+//        pages.add(ChatColor.RED + "Willkommen auf " + ChatColor.BLUE + "Minestar.de" + ChatColor.RED + "!");
+//        pages.add(ChatColor.RED + "Seite 2");
+//        pages.add(ChatColor.RED + "Seite 3");
+//        MinestarBook myBook = MinestarBook.createWrittenBook("AUTHOR", "TITLE", pages);
+//        event.getPlayer().setItemInHand(myBook.getBukkitItemStack());
+//    }
 
     public static void sendMessage(Message message) {
         messageManger.handleMessage(message);

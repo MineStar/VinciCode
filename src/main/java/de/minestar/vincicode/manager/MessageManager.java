@@ -25,12 +25,23 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import de.minestar.minestarlibrary.messages.Message;
+import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
+import de.minestar.vincicode.core.VinciCodeCore;
 import de.minestar.vincicode.data.MailBox;
 
 public class MessageManager {
 
     private Map<String, MailBox> mailBoxMap = new HashMap<String, MailBox>();
+
+    public MessageManager() {
+        loadMailBoxes();
+    }
+
+    private void loadMailBoxes() {
+        mailBoxMap = VinciCodeCore.dbHandler.loadMailBoxes();
+        ConsoleUtils.printInfo(VinciCodeCore.NAME, "Loaded " + mailBoxMap.size() + " mail boxes!");
+    }
 
     public void handleMessage(Message message) {
         String targetName = message.getTarget();
@@ -45,5 +56,9 @@ public class MessageManager {
             if (mailBox != null)
                 mailBox.add(message);
         }
+    }
+
+    public boolean hasNewMessage(String player) {
+        return false;
     }
 }
