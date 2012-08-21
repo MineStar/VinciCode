@@ -43,18 +43,22 @@ public class MessageManager {
         ConsoleUtils.printInfo(VinciCodeCore.NAME, "Loaded " + mailBoxMap.size() + " mail boxes!");
     }
 
-    public void handleMessage(Message message) {
+    public boolean handleMessage(Message message) {
         String targetName = message.getTarget();
         Player player = Bukkit.getPlayerExact(targetName);
         if (player != null && player.isOnline()) {
             PlayerUtils.sendBlankMessage(player, message.getCompleteMessage());
+            return true;
         } else {
             MailBox mailBox = mailBoxMap.get(targetName.toLowerCase());
-
-            // TODO: Implement an else statement or create a new mailbox for
-            // every new user
-            if (mailBox != null)
-                mailBox.add(message);
+            // PLAYER HAS NO MAIL BOX
+            if (mailBox == null) {
+                mailBox = new MailBox();
+                mailBoxMap.put(targetName.toLowerCase(), mailBox);
+            }
+            // SAVE LOCALY AND SAVE IN DATEBASE
+            mailBox.add(message);
+            return VinciCodeCore.dbHandler.addMessage(message);
         }
     }
 

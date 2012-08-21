@@ -2,3 +2,7 @@ name: VinciCode
 main: de.minestar.vincicode.core.VinciCodeCore
 version: ${pom.version}
 depend: [MineStarLibrary]
+commands:
+    vinci:
+        description: Commands of VinciCode
+        usage: /vinci <SubCommand>

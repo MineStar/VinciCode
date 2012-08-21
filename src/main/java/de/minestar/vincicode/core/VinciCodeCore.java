@@ -21,7 +21,10 @@ package de.minestar.vincicode.core;
 import java.io.File;
 
 import de.minestar.minestarlibrary.AbstractCore;
+import de.minestar.minestarlibrary.commands.CommandList;
 import de.minestar.minestarlibrary.messages.Message;
+import de.minestar.vincicode.command.vinci.cmdMessage;
+import de.minestar.vincicode.command.vinci.cmdVinci;
 import de.minestar.vincicode.database.DatabaseHandler;
 import de.minestar.vincicode.manager.MessageManager;
 
@@ -46,6 +49,21 @@ public class VinciCodeCore extends AbstractCore {
 
         messageManger = new MessageManager();
 
+        return true;
+    }
+
+    @Override
+    protected boolean createCommands() {
+        //@formatter:off
+        this.cmdList = new CommandList(
+                
+                new cmdVinci(   "/vinci",       "",             "",
+                
+                        new cmdMessage(    "message",     "<Target> <Text>",     "vincicode.command.sendmessage")
+                )
+            );
+                
+        //@formatter:on
         return true;
     }
 
