@@ -53,11 +53,14 @@ public class DatabaseHandler extends AbstractMySQLHandler {
         addMessage = con.prepareStatement("INSERT INTO message (sender, target, prefix, message, prefixColor, messageColor, timestamp, isOfficial, isRead) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         deleteMessage = con.prepareStatement("DELETE FROM message WHERE timestamp = ? AND sender = ? AND target = ?");
+
+        updateMessageRead = con.prepareStatement("UPDATE message SET isRead = ? WHERE timestamp = ? AND sender = ? AND target = ?");
     }
 
     // MESSAGES //
     private PreparedStatement addMessage;
     private PreparedStatement deleteMessage;
+    private PreparedStatement updateMessageRead;
 
     public Map<String, MailBox> loadMailBoxes() {
         Map<String, MailBox> mailBoxMap = new HashMap<String, MailBox>();
@@ -132,6 +135,19 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             return deleteMessage.executeUpdate() == 1;
         } catch (Exception e) {
             ConsoleUtils.printException(e, VinciCodeCore.NAME, "Can't delete message from database! Message =" + message);
+            return false;
+        }
+    }
+
+    public boolean setMessageRead(Message message) {
+        try {
+            updateMessageRead.setBoolean(1, message.isRead());
+            updateMessageRead.setLong(2, message.getTimestamp());
+            updateMessageRead.setString(3, message.getSender());
+            updateMessageRead.setString(4, message.getTarget());
+            return updateMessageRead.executeUpdate() == 1;
+        } catch (Exception e) {
+            ConsoleUtils.printException(e, VinciCodeCore.NAME, "Can't set message read status to database! Message =" + message);
             return false;
         }
     }
