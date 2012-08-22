@@ -6,3 +6,21 @@ commands:
     vinci:
         description: Commands of VinciCode
         usage: /vinci <SubCommand>
+    message:
+        description: Sendet einem Spieler eine Nachricht
+        usage: /message <Spieler> <Nachricht>
+    m:
+        description: Sendet einem Spieler eine Nachricht
+        usage: /m <Spieler> <Nachricht>
+    w:
+        description: Sendet einem Spieler eine Nachricht
+        usage: /w <Spieler> <Nachricht>
+    tell:
+        description: Sendet einem Spieler eine Nachricht
+        usage: /tell <Spieler> <Nachricht>
+    reply:
+        description: Antwortet auf eine Nachricht
+        usage: /message <Nachricht>
+    r:
+        description: Antwortet auf eine Nachricht
+        usage: /message <Nachricht>

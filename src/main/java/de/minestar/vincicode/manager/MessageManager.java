@@ -49,20 +49,37 @@ public class MessageManager {
         if (player != null && player.isOnline()) {
             PlayerUtils.sendBlankMessage(player, message.getCompleteMessage());
             return true;
-        } else {
-            MailBox mailBox = mailBoxMap.get(targetName.toLowerCase());
-            // PLAYER HAS NO MAIL BOX
-            if (mailBox == null) {
-                mailBox = new MailBox();
-                mailBoxMap.put(targetName.toLowerCase(), mailBox);
-            }
-            // SAVE LOCALY AND SAVE IN DATEBASE
-            mailBox.add(message);
-            return VinciCodeCore.dbHandler.addMessage(message);
+        } else
+            return handleOfflineMessage(message);
+
+    }
+
+    public boolean handleOfflineMessage(Message message) {
+        String targetName = message.getTarget();
+        MailBox mailBox = mailBoxMap.get(targetName.toLowerCase());
+        // PLAYER HAS NO MAIL BOX
+        if (mailBox == null) {
+            mailBox = new MailBox();
+            mailBoxMap.put(targetName.toLowerCase(), mailBox);
         }
+        // SAVE LOCALY AND SAVE IN DATEBASE
+        mailBox.add(message);
+        return VinciCodeCore.dbHandler.addMessage(message);
     }
 
     public boolean hasNewMessage(String player) {
         return false;
     }
+
+    private Map<Player, Player> lastSendMap = new HashMap<Player, Player>();
+
+    public void setLastSend(Player sender, Player receiver) {
+        lastSendMap.put(sender, receiver);
+        lastSendMap.put(receiver, sender);
+    }
+
+    public Player getLastReceiver(Player player) {
+        return lastSendMap.get(player);
+    }
+
 }

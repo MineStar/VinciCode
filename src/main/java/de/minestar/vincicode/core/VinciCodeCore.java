@@ -23,10 +23,12 @@ import java.io.File;
 import de.minestar.minestarlibrary.AbstractCore;
 import de.minestar.minestarlibrary.commands.CommandList;
 import de.minestar.minestarlibrary.messages.Message;
-import de.minestar.vincicode.command.vinci.cmdMessage;
-import de.minestar.vincicode.command.vinci.cmdVinci;
+import de.minestar.minestarlibrary.stats.StatisticHandler;
+import de.minestar.vincicode.command.cmdMessage;
+import de.minestar.vincicode.command.cmdReply;
 import de.minestar.vincicode.database.DatabaseHandler;
 import de.minestar.vincicode.manager.MessageManager;
+import de.minestar.vincicode.statistic.WhisperStat;
 
 public class VinciCodeCore extends AbstractCore {
 //public class VinciCodeCore extends AbstractCore implements Listener {
@@ -56,14 +58,29 @@ public class VinciCodeCore extends AbstractCore {
     protected boolean createCommands() {
         //@formatter:off
         this.cmdList = new CommandList(
+
+                new cmdMessage(     "/message",      "<Target> <Text>",     "vincicode.command.sendmessage"),
+                new cmdMessage(     "/m",            "<Target> <Text>",     "vincicode.command.sendmessage"),
+                new cmdMessage(     "/w",            "<Target> <Text>",     "vincicode.command.sendmessage"),
+                new cmdMessage(     "/tell",         "<Target> <Text>",     "vincicode.command.sendmessage"),
                 
-                new cmdVinci(   "/vinci",       "",             "",
-                
-                        new cmdMessage(    "message",     "<Target> <Text>",     "vincicode.command.sendmessage")
-                )
+                new cmdReply(       "/r",            "<Target> <Text>",     "vincicode.command.sendmessage"),
+                new cmdReply(       "/reply",        "<Target> <Text>",     "vincicode.command.sendmessage")
+
+//                new cmdVinci(   "/vinci",       "",             "", null
+//
+//
+//                )
             );
                 
         //@formatter:on
+        return true;
+    }
+
+    @Override
+    protected boolean registerStatistics() {
+        StatisticHandler.registerStatistic(WhisperStat.class);
+
         return true;
     }
 
