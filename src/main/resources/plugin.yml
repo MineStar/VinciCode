@@ -3,9 +3,6 @@ main: de.minestar.vincicode.core.VinciCodeCore
 version: ${pom.version}
 depend: [MineStarLibrary]
 commands:
-    vinci:
-        description: Commands of VinciCode
-        usage: /vinci <SubCommand>
     message:
         description: Sendet einem Spieler eine Nachricht
         usage: /message <Spieler> <Nachricht>
@@ -24,3 +21,6 @@ commands:
     r:
         description: Antwortet auf eine Nachricht
         usage: /message <Nachricht>
+    mailbox:
+        description: Gibt dem Spieler das MailBox Item in die Hand
+        usage: Mailbox

@@ -93,6 +93,10 @@ public class MailBox {
         }
     }
 
+    public List<Message> getAllMessages() {
+        return new LinkedList<Message>(mailBox);
+    }
+
     @Override
     public String toString() {
         StringBuilder sBuilder = new StringBuilder(mailBox.size() * 32);

@@ -24,6 +24,7 @@ import de.minestar.minestarlibrary.AbstractCore;
 import de.minestar.minestarlibrary.commands.CommandList;
 import de.minestar.minestarlibrary.messages.Message;
 import de.minestar.minestarlibrary.stats.StatisticHandler;
+import de.minestar.vincicode.command.cmdMailbox;
 import de.minestar.vincicode.command.cmdMessage;
 import de.minestar.vincicode.command.cmdReply;
 import de.minestar.vincicode.database.DatabaseHandler;
@@ -64,13 +65,11 @@ public class VinciCodeCore extends AbstractCore {
                 new cmdMessage(     "/w",            "<Target> <Text>",     "vincicode.command.sendmessage"),
                 new cmdMessage(     "/tell",         "<Target> <Text>",     "vincicode.command.sendmessage"),
                 
-                new cmdReply(       "/r",            "<Target> <Text>",     "vincicode.command.sendmessage"),
-                new cmdReply(       "/reply",        "<Target> <Text>",     "vincicode.command.sendmessage")
-
-//                new cmdVinci(   "/vinci",       "",             "", null
-//
-//
-//                )
+                new cmdReply(       "/r",            "<Target> <Text>",     "vincicode.command.reply"),
+                new cmdReply(       "/reply",        "<Target> <Text>",     "vincicode.command.reply"),
+                
+                new cmdMailbox(     "/mailbox",     "",                     "vincicode.command.mailbox")
+                
             );
                 
         //@formatter:on
@@ -91,22 +90,6 @@ public class VinciCodeCore extends AbstractCore {
 
         return !dbHandler.hasConnection();
     }
-//
-//    @Override
-//    protected boolean registerEvents(PluginManager pm) {
-//        pm.registerEvents(this, this);
-//        return true;
-//    }
-
-//    @EventHandler
-//    public void onPlayerRespawn(PlayerRespawnEvent event) {
-//        List<String> pages = new ArrayList<String>();
-//        pages.add(ChatColor.RED + "Willkommen auf " + ChatColor.BLUE + "Minestar.de" + ChatColor.RED + "!");
-//        pages.add(ChatColor.RED + "Seite 2");
-//        pages.add(ChatColor.RED + "Seite 3");
-//        MinestarBook myBook = MinestarBook.createWrittenBook("AUTHOR", "TITLE", pages);
-//        event.getPlayer().setItemInHand(myBook.getBukkitItemStack());
-//    }
 
     public static void sendMessage(Message message) {
         messageManger.handleMessage(message);

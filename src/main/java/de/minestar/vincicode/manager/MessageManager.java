@@ -18,12 +18,17 @@
 
 package de.minestar.vincicode.manager;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
+import de.minestar.minestarlibrary.bookapi.MinestarBook;
 import de.minestar.minestarlibrary.messages.Message;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
@@ -37,6 +42,8 @@ public class MessageManager {
     public MessageManager() {
         loadMailBoxes();
     }
+
+    // MAIL BOX AND MESSAGE HANDELING
 
     private void loadMailBoxes() {
         mailBoxMap = VinciCodeCore.dbHandler.loadMailBoxes();
@@ -71,6 +78,30 @@ public class MessageManager {
         MailBox mailBox = mailBoxMap.get(player.toLowerCase());
         return mailBox != null && mailBox.hasNewMessages();
     }
+
+    public ItemStack getMailBoxItem(String player) {
+        MailBox mailBox = mailBoxMap.get(player.toLowerCase());
+        MinestarBook myBook;
+        if (mailBox == null)
+            myBook = MinestarBook.createWrittenBook(player, "Deine MailBox", Collections.<String> emptyList());
+        else {
+            List<String> pages = new ArrayList<String>();
+            List<Message> messages = mailBox.getAllMessages();
+            for (Message message : messages) {
+                pages.add(formatMessage(message));
+            }
+            myBook = MinestarBook.createWrittenBook(player, "Deine MailBox", pages);
+        }
+
+        return myBook.getBukkitItemStack();
+    }
+
+    private String formatMessage(Message message) {
+        // TODO: Implement a nice format for messages
+        return message.getCompleteMessage();
+    }
+
+    // CHAT COMMANDS
 
     private Map<Player, Player> lastSendMap = new HashMap<Player, Player>();
 
