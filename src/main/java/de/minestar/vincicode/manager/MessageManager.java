@@ -68,7 +68,8 @@ public class MessageManager {
     }
 
     public boolean hasNewMessage(String player) {
-        return false;
+        MailBox mailBox = mailBoxMap.get(player.toLowerCase());
+        return mailBox != null && mailBox.hasNewMessages();
     }
 
     private Map<Player, Player> lastSendMap = new HashMap<Player, Player>();

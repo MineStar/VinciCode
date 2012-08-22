@@ -22,26 +22,29 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import de.minestar.minestarlibrary.messages.InfoMessage;
 import de.minestar.minestarlibrary.messages.Message;
-import de.minestar.minestarlibrary.messages.OfficialMessage;
-import de.minestar.minestarlibrary.messages.SuccessMessage;
 
 public class MailBox {
 
     private LinkedList<Message> mailBox;
     private ListIterator<Message> iter;
 
+    private boolean newMessages;
+
     // NEW MAIL BOX
     public MailBox() {
         mailBox = new LinkedList<Message>();
         iter = mailBox.listIterator();
+
+        this.newMessages = false;
     }
 
     // MAIL BOX FROM DATABASE
     public MailBox(List<Message> messages) {
         mailBox = new LinkedList<Message>(messages);
         iter = mailBox.listIterator();
+
+        searchForNewMessages();
     }
 
     public boolean hasNext() {
@@ -72,6 +75,24 @@ public class MailBox {
         iter.remove();
     }
 
+    public boolean hasNewMessages() {
+        return newMessages;
+    }
+
+    public void markAsRead(Message message) {
+        message.setRead(false);
+        searchForNewMessages();
+    }
+
+    private void searchForNewMessages() {
+        for (Message message : mailBox) {
+            if (!message.isRead()) {
+                this.newMessages = true;
+                break;
+            }
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder sBuilder = new StringBuilder(mailBox.size() * 32);
@@ -85,30 +106,5 @@ public class MailBox {
         sBuilder.setCharAt(sBuilder.length() - 1, ']');
 
         return sBuilder.toString();
-    }
-
-    // JUST SOME TESTS - THEY WILL FLY AWAY
-    public static void main(String[] args) {
-        MailBox box = new MailBox();
-        Message msg1 = new OfficialMessage("VinciCode", "Meldanor", "Deine erste Nachricht!");
-        Message msg2 = new SuccessMessage("VinciCode", "Falake", "Der Mel hat seine erste Nachricht erhalten!");
-
-        box.add(msg1);
-
-        System.out.println("Added msg1 ");
-        System.out.println(box);
-        box.add(msg2);
-        System.out.println("Added msg2 ");
-        System.out.println(box);
-
-        System.out.println(box.hasNext());
-        System.out.println(box.next().getCompleteMessage());
-        System.out.println(box.hasPrev());
-
-        Message msg3 = new InfoMessage("VinciCode", "GeMoschen", "Schau, eine dritte Nachricht!");
-
-        box.add(msg3);
-        System.out.println(box.hasNext());
-        System.out.println(box.next().getCompleteMessage());
     }
 }
