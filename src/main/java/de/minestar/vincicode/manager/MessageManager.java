@@ -18,8 +18,10 @@
 
 package de.minestar.vincicode.manager;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,9 +98,20 @@ public class MessageManager {
         return myBook.getBukkitItemStack();
     }
 
+    // FORMAT MESSAGES
+    private final static DateFormat FORMAT = DateFormat.getDateTimeInstance();
+
     private String formatMessage(Message message) {
-        // TODO: Implement a nice format for messages
-        return message.getCompleteMessage();
+        StringBuilder sBuilder = new StringBuilder(256);
+        sBuilder.append("Absender: ");
+        sBuilder.append(message.getSender());
+        sBuilder.append('\n');
+        sBuilder.append("Datum: ");
+        sBuilder.append(FORMAT.format(new Date(message.getTimestamp())));
+        sBuilder.append('\n');
+        sBuilder.append(message.getMessage());
+
+        return sBuilder.toString();
     }
 
     // CHAT COMMANDS
