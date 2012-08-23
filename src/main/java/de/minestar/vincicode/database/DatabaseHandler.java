@@ -112,8 +112,8 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             addMessage.setString(2, message.getTarget());
             addMessage.setString(3, message.getPrefix());
             addMessage.setString(4, message.getMessage());
-            addMessage.setString(5, message.getPrefixColor().toString());
-            addMessage.setString(6, message.getMessageColor().toString());
+            addMessage.setString(5, message.getPrefixColor().getChar() + "");
+            addMessage.setString(6, message.getMessageColor().getChar() + "");
             addMessage.setLong(7, message.getTimestamp());
             addMessage.setBoolean(8, message.isOfficial());
             addMessage.setBoolean(9, message.isRead());
