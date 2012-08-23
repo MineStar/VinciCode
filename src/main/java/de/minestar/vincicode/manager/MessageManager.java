@@ -82,9 +82,9 @@ public class MessageManager {
     public ItemStack getMailBoxItem(String player) {
         MailBox mailBox = mailBoxMap.get(player.toLowerCase());
         MinestarBook myBook;
-        if (mailBox == null)
+        if (mailBox == null) {
             myBook = MinestarBook.createWrittenBook(player, "Deine MailBox", Collections.<String> emptyList());
-        else {
+        } else {
             List<String> pages = new ArrayList<String>();
             List<Message> messages = mailBox.getAllMessages();
             for (Message message : messages) {

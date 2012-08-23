@@ -24,8 +24,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
@@ -69,9 +67,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             Statement st = dbConnection.getConnection().createStatement();
             ResultSet rs = st.executeQuery("SELECT sender, target, prefix, message, prefixColor, messageColor, timestamp, isOfficial, isRead FROM message ORDER BY target, timestamp");
 
-            List<Message> messageList = new LinkedList<Message>();
-            String currentTarget = "";
-            String lastTarget = "";
+            String target = "";
             String sender;
             String prefix;
             String message;
@@ -81,13 +77,11 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             boolean isOfficial;
             boolean isRead;
 
+            MailBox mailBox;
+
             while (rs.next()) {
-                currentTarget = rs.getString(2);
-                if (!currentTarget.equals(lastTarget)) {
-                    mailBoxMap.put(lastTarget.toLowerCase(), new MailBox(messageList));
-                    messageList.clear();
-                }
                 sender = rs.getString(1);
+                target = rs.getString(2);
                 prefix = rs.getString(3);
                 message = rs.getString(4);
                 prefixColor = rs.getString(5);
@@ -96,9 +90,13 @@ public class DatabaseHandler extends AbstractMySQLHandler {
                 isOfficial = rs.getBoolean(8);
                 isRead = rs.getBoolean(9);
 
-                messageList.add(new Message(sender, currentTarget, prefix, message, ChatColor.getByChar(prefixColor), ChatColor.getByChar(messageColor), timestamp, isOfficial, isRead));
+                mailBox = mailBoxMap.get(target.toLowerCase());
+                if (mailBox == null) {
+                    mailBox = new MailBox();
+                    mailBoxMap.put(target.toLowerCase(), mailBox);
+                }
+                mailBox.add(new Message(sender, target, prefix, message, ChatColor.getByChar(prefixColor), ChatColor.getByChar(messageColor), timestamp, isOfficial, isRead));
 
-                lastTarget = currentTarget;
             }
         } catch (Exception e) {
             ConsoleUtils.printException(e, VinciCodeCore.NAME, "Can't load mailboxes from database!");

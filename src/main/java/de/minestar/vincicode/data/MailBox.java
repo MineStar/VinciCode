@@ -99,6 +99,8 @@ public class MailBox {
 
     @Override
     public String toString() {
+        if (mailBox.isEmpty())
+            return "[]";
         StringBuilder sBuilder = new StringBuilder(mailBox.size() * 32);
         sBuilder.append('[');
         for (Message msg : mailBox) {
