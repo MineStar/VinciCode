@@ -18,7 +18,7 @@
 
 package de.minestar.vincicode.data;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.minestar.minestarlibrary.messages.Message;
@@ -26,19 +26,19 @@ import de.minestar.minestarlibrary.messages.Message;
 public class MailBox {
 
     private int currentMessagePosition = 0;
-    private LinkedList<Message> mailBox;
+    private ArrayList<Message> mailBox;
 
     private boolean newMessages;
 
     // NEW MAIL BOX
     public MailBox() {
-        mailBox = new LinkedList<Message>();
+        mailBox = new ArrayList<Message>();
         this.newMessages = false;
     }
 
     // MAIL BOX FROM DATABASE
     public MailBox(List<Message> messages) {
-        mailBox = new LinkedList<Message>(messages);
+        mailBox = new ArrayList<Message>(messages);
         searchForNewMessages();
     }
 
@@ -73,8 +73,8 @@ public class MailBox {
     }
 
     public void add(Message message) {
-        // HAS TO RECREATE THE ITERATOR
         mailBox.add(message);
+        this.newMessages = true;
     }
 
     public void deleteCurrent() {
@@ -100,7 +100,7 @@ public class MailBox {
     }
 
     public List<Message> getAllMessages() {
-        return new LinkedList<Message>(mailBox);
+        return new ArrayList<Message>(mailBox);
     }
 
     public int getMessageCount() {
