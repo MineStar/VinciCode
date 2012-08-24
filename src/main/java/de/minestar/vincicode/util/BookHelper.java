@@ -18,9 +18,10 @@
 
 package de.minestar.vincicode.util;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 
@@ -29,8 +30,8 @@ import de.minestar.minestarlibrary.messages.Message;
 public class BookHelper {
 
     // FORMAT MESSAGES
-    private final static SimpleDateFormat DATE = new SimpleDateFormat("dd.MM.yyyy");
-    private final static SimpleDateFormat TIME = new SimpleDateFormat("HH:mm:ss");
+    private final static DateFormat DATE = DateFormat.getDateInstance();
+    private final static DateFormat TIME = DateFormat.getTimeInstance();
 
     private static void appendText(StringBuilder stringBuilder, ChatColor chatColor, String extraFormat, String text) {
         // set color
@@ -78,32 +79,43 @@ public class BookHelper {
         stringBuilder.append("§r");
         stringBuilder.append("\n");
 
-        // append text
-        String text = stringBuilder.toString();
+        // TODO: Implement a method without a unneccessary split
+        // Use instead a search for space and substrings(mel has worked on one,
+        // but it was ugly as hell)
+        // Will be very more performant and use less memory
         ArrayList<String> words = BookHelper.getWords(message.getMessage());
         int count = 1;
         for (String word : words) {
-            if (text.length() + word.length() > 256) {
-                pages.add(text);
-                text = "";
+            // MORE WORDS THAT CAN FIT ON ONE PAGE
+            if (stringBuilder.length() + word.length() > 256) {
+                // STORE CURRENT PAGE
+                pages.add(stringBuilder.toString());
+                // RESET STRING BUILDER
+                stringBuilder.setLength(0);
+                stringBuilder.setLength(256);
             }
-            text += word;
+            // APPEND WORD
+            stringBuilder.append(word);
+            // TODO : WHY WE CHECK THIS?!?
             if (count < words.size()) {
-                text += " ";
+                stringBuilder.append(' ');
             }
         }
-        if (text.length() > 0) {
-            pages.add(text);
+
+        if (stringBuilder.length() > 0) {
+            pages.add(stringBuilder.toString());
         }
         return pages;
     }
 
+    private final static Pattern SPLIT_SPACE = Pattern.compile(" ");
+
     private static ArrayList<String> getWords(String text) {
         ArrayList<String> words = new ArrayList<String>();
-        String[] split = text.split(" ");
-        for (String txt : split) {
-            words.add(txt);
-        }
+        String[] split = SPLIT_SPACE.split(text);
+        for (int i = 0; i < split.length; ++i)
+            words.add(split[i]);
+
         return words;
     }
 }
