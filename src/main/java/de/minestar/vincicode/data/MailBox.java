@@ -20,7 +20,6 @@ package de.minestar.vincicode.data;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 import de.minestar.minestarlibrary.messages.Message;
 
