@@ -19,12 +19,14 @@
 package de.minestar.vincicode.command;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import de.minestar.minestarlibrary.commands.AbstractExtendedCommand;
 import de.minestar.minestarlibrary.messages.Message;
 import de.minestar.minestarlibrary.stats.StatisticHandler;
 import de.minestar.minestarlibrary.utils.ChatUtils;
+import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
 import de.minestar.vincicode.core.VinciCodeCore;
 import de.minestar.vincicode.statistic.WhisperStat;
@@ -65,7 +67,7 @@ public class cmdMessage extends AbstractExtendedCommand {
         // SEND MESSAGES INGAME
         String text = ChatUtils.getMessage(args, 1);
         PlayerUtils.sendBlankMessage(player, ChatColor.GOLD + "[Ich -> " + target.getName() + "] : " + ChatColor.GRAY + text);
-        PlayerUtils.sendBlankMessage(player, ChatColor.GOLD + "[" + target.getName() + " -> Mich" + "] : " + ChatColor.GRAY + text);
+        PlayerUtils.sendBlankMessage(target, ChatColor.GOLD + "[" + target.getName() + " -> Mich" + "] : " + ChatColor.GRAY + text);
 
         // SAVE FOR REPLIES WITH /R
         VinciCodeCore.messageManger.setLastSend(player, target);
@@ -74,4 +76,30 @@ public class cmdMessage extends AbstractExtendedCommand {
         StatisticHandler.handleStatistic(new WhisperStat(player.getName(), target.getName(), ChatUtils.getMessage(args, 1)));
     }
 
+    @Override
+    public void execute(String[] args, ConsoleCommandSender console) {
+        String targetName = args[0];
+        Player target = PlayerUtils.getOnlinePlayer(targetName);
+        // POSSIBLE OFFLINE PLAYER
+        if (target == null) {
+            targetName = PlayerUtils.getOfflinePlayerName(targetName);
+            if (targetName == null) {
+                ConsoleUtils.printInfo(pluginName, "Spieler '" + args[0] + "' nicht gefunden!");
+                return;
+            }
+            // SAVE MESSAGE TO SEND HIM WHEN PLAYER IS ONLINE
+            Message message = new Message(":ugly:", targetName, ChatColor.WHITE, ChatUtils.getMessage(args, 1));
+            if (VinciCodeCore.messageManger.handleOfflineMessage(message))
+                ConsoleUtils.printInfo(pluginName, "Spieler '" + targetName + "' ist offline. Er erhält die Nachricht, wenn er online ist.");
+            else
+                ConsoleUtils.printInfo(pluginName, "Spieler '" + targetName + "' ist offline, aber es konnte ihm wegen eines Datenbankfehlers keine Nachricht gesendet werden!");
+
+            return;
+        }
+
+        // SEND MESSAGES INGAME
+        String text = ChatUtils.getMessage(args, 1);
+        ConsoleUtils.printInfo(pluginName, ChatColor.GOLD + "[Ich -> " + target.getName() + "] : " + ChatColor.GRAY + text);
+        PlayerUtils.sendBlankMessage(target, ChatColor.GOLD + "[" + console.getName() + " -> Mich" + "] : " + ChatColor.GRAY + text);
+    }
 }

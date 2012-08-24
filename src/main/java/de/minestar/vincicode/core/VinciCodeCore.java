@@ -20,6 +20,8 @@ package de.minestar.vincicode.core;
 
 import java.io.File;
 
+import org.bukkit.plugin.PluginManager;
+
 import de.minestar.minestarlibrary.AbstractCore;
 import de.minestar.minestarlibrary.commands.CommandList;
 import de.minestar.minestarlibrary.messages.Message;
@@ -28,6 +30,7 @@ import de.minestar.vincicode.command.cmdMailbox;
 import de.minestar.vincicode.command.cmdMessage;
 import de.minestar.vincicode.command.cmdReply;
 import de.minestar.vincicode.database.DatabaseHandler;
+import de.minestar.vincicode.listener.ActionListener;
 import de.minestar.vincicode.manager.MessageManager;
 import de.minestar.vincicode.statistic.WhisperStat;
 
@@ -38,6 +41,8 @@ public class VinciCodeCore extends AbstractCore {
 
     public static MessageManager messageManger;
     public static DatabaseHandler dbHandler;
+
+    public static ActionListener actionListener;
 
     public VinciCodeCore() {
         super(NAME);
@@ -77,9 +82,20 @@ public class VinciCodeCore extends AbstractCore {
     }
 
     @Override
+    protected boolean createListener() {
+        actionListener = new ActionListener();
+        return true;
+    }
+
+    @Override
     protected boolean registerStatistics() {
         StatisticHandler.registerStatistic(WhisperStat.class);
+        return true;
+    }
 
+    @Override
+    protected boolean registerEvents(PluginManager pm) {
+        pm.registerEvents(actionListener, this);
         return true;
     }
 

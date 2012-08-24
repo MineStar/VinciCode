@@ -26,53 +26,60 @@ import de.minestar.minestarlibrary.messages.Message;
 
 public class MailBox {
 
+    private int currentMessagePosition = 0;
     private LinkedList<Message> mailBox;
-    private ListIterator<Message> iter;
 
     private boolean newMessages;
 
     // NEW MAIL BOX
     public MailBox() {
         mailBox = new LinkedList<Message>();
-        iter = mailBox.listIterator();
-
         this.newMessages = false;
     }
 
     // MAIL BOX FROM DATABASE
     public MailBox(List<Message> messages) {
         mailBox = new LinkedList<Message>(messages);
-        iter = mailBox.listIterator();
-
         searchForNewMessages();
     }
 
     public boolean hasNext() {
-        return iter.hasNext();
+        return currentMessagePosition < this.mailBox.size();
     }
 
     public Message next() {
-        return iter.next();
+        if (this.hasNext()) {
+            ++currentMessagePosition;
+            if (currentMessagePosition > this.mailBox.size()) {
+                currentMessagePosition = this.mailBox.size();
+            }
+            return this.mailBox.get(currentMessagePosition - 1);
+        }
+        return null;
     }
 
     public boolean hasPrev() {
-        return iter.hasPrevious();
+        return currentMessagePosition > 1;
     }
 
     public Message prev() {
-        return iter.previous();
+        if (this.hasPrev()) {
+            --currentMessagePosition;
+            if (currentMessagePosition < 0) {
+                currentMessagePosition = 0;
+            }
+            return this.mailBox.get(currentMessagePosition - 1);
+        }
+        return null;
     }
 
     public void add(Message message) {
         // HAS TO RECREATE THE ITERATOR
-        int pos = iter.previousIndex();
-
         mailBox.add(message);
-        iter = mailBox.listIterator(pos + 1);
     }
 
     public void deleteCurrent() {
-        iter.remove();
+        mailBox.remove(this.currentMessagePosition - 1);
     }
 
     public boolean hasNewMessages() {
@@ -95,6 +102,14 @@ public class MailBox {
 
     public List<Message> getAllMessages() {
         return new LinkedList<Message>(mailBox);
+    }
+
+    public int getMessageCount() {
+        return this.mailBox.size();
+    }
+
+    public int getCurrentMessagePosition() {
+        return currentMessagePosition;
     }
 
     @Override

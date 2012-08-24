@@ -18,10 +18,8 @@
 
 package de.minestar.vincicode.manager;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +34,7 @@ import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
 import de.minestar.vincicode.core.VinciCodeCore;
 import de.minestar.vincicode.data.MailBox;
+import de.minestar.vincicode.util.BookHelper;
 
 public class MessageManager {
 
@@ -85,37 +84,26 @@ public class MessageManager {
         MailBox mailBox = mailBoxMap.get(player.toLowerCase());
         MinestarBook myBook;
         if (mailBox == null) {
-            myBook = MinestarBook.createWrittenBook(player, "Deine MailBox", Collections.<String> emptyList());
+            myBook = MinestarBook.createWrittenBook("Ugly Post", "Deine MailBox", Collections.<String> emptyList());
         } else {
             List<String> pages = new ArrayList<String>();
             List<Message> messages = mailBox.getAllMessages();
-            for (Message message : messages) {
-                pages.add(formatMessage(message));
+
+            if (messages.size() > 0) {
+                Message message = messages.get(0);
+                pages = BookHelper.getPages(message);
             }
-            myBook = MinestarBook.createWrittenBook(player, "Deine MailBox", pages);
+            myBook = MinestarBook.createWrittenBook("Ugly Post", "Deine MailBox", pages);
         }
 
         return myBook.getBukkitItemStack();
     }
 
-    // FORMAT MESSAGES
-    private final static DateFormat FORMAT = DateFormat.getDateTimeInstance();
-
-    private String formatMessage(Message message) {
-        StringBuilder sBuilder = new StringBuilder(256);
-        sBuilder.append("Absender: ");
-        sBuilder.append(message.getSender());
-        sBuilder.append('\n');
-        sBuilder.append("Datum: ");
-        sBuilder.append(FORMAT.format(new Date(message.getTimestamp())));
-        sBuilder.append('\n');
-        sBuilder.append(message.getMessage());
-
-        return sBuilder.toString();
+    public MailBox getMailBox(String player) {
+        return mailBoxMap.get(player.toLowerCase());
     }
 
     // CHAT COMMANDS
-
     private Map<Player, Player> lastSendMap = new HashMap<Player, Player>();
 
     public void setLastSend(Player sender, Player receiver) {

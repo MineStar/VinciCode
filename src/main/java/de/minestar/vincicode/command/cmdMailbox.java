@@ -20,8 +20,10 @@ package de.minestar.vincicode.command;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import de.minestar.minestarlibrary.bookapi.MinestarBook;
 import de.minestar.minestarlibrary.commands.AbstractCommand;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
 import de.minestar.vincicode.core.VinciCodeCore;
@@ -51,7 +53,19 @@ public class cmdMailbox extends AbstractCommand {
     }
 
     private boolean hasMailBoxInInv(Player player) {
-        return player.getInventory().contains(Material.WRITTEN_BOOK);
+        Inventory inventory = player.getInventory();
+        ItemStack[] stacks = inventory.getContents();
+
+        for (ItemStack itemStack : stacks) {
+            if (itemStack != null && itemStack.getType().equals(Material.WRITTEN_BOOK)) {
+                MinestarBook book = MinestarBook.loadBook(itemStack);
+                if (book.getAuthor().equalsIgnoreCase("Ugly Post")) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private boolean inventoryIsFull(Player player) {
