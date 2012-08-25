@@ -25,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 
 import de.minestar.minestarlibrary.bookapi.MinestarBook;
 import de.minestar.minestarlibrary.commands.AbstractCommand;
+import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
 import de.minestar.vincicode.core.VinciCodeCore;
 
@@ -36,36 +37,53 @@ public class cmdMailbox extends AbstractCommand {
 
     @Override
     public void execute(String[] args, Player player) {
-
-        if (hasMailBoxInInv(player)) {
-            PlayerUtils.sendError(player, pluginName, "Du hast bereits eine MailBox in deinem Inventar");
-            return;
+        ItemStack mailBoxItem = null;
+        int index = findMailBox(player);
+        // PLAYER HAS MAILBOX IN INVENTORY
+        // SWAP IT WITH CURRENT ITEM IN HAND
+        if (index != -1) {
+            Inventory inv = player.getInventory();
+            mailBoxItem = inv.getItem(index);
+            if (mailBoxItem != null) {
+                ItemStack temp = player.getItemInHand();
+                // HAS NO ITEM IN HAND
+                if (temp == null)
+                    player.setItemInHand(mailBoxItem);
+                else {
+                    inv.setItem(index, temp);
+                    player.setItemInHand(mailBoxItem);
+                }
+                PlayerUtils.sendError(player, pluginName, "Deine Mailbox");
+                return;
+            } else {
+                ConsoleUtils.printError(pluginName, "Mailbox item is null but the index '" + index + "' was found!");
+                return;
+            }
         }
 
         if (inventoryIsFull(player)) {
-            PlayerUtils.sendError(player, pluginName, "Deine Inventar ist voll!");
+            PlayerUtils.sendError(player, pluginName, "Dein Inventar ist voll!");
             return;
         }
 
-        ItemStack mailBoxItem = VinciCodeCore.messageManger.getMailBoxItem(player.getName());
+        mailBoxItem = VinciCodeCore.messageManger.getMailBoxItem(player.getName());
         player.setItemInHand(mailBoxItem);
         PlayerUtils.sendSuccess(player, pluginName, "Deine Mailbox");
     }
 
-    private boolean hasMailBoxInInv(Player player) {
+    private int findMailBox(Player player) {
         Inventory inventory = player.getInventory();
-        ItemStack[] stacks = inventory.getContents();
 
-        for (ItemStack itemStack : stacks) {
+        ItemStack[] stacks = inventory.getContents();
+        for (int i = 0; i < stacks.length; i++) {
+            ItemStack itemStack = stacks[i];
             if (itemStack != null && itemStack.getType().equals(Material.WRITTEN_BOOK)) {
                 MinestarBook book = MinestarBook.loadBook(itemStack);
-                if (book.getAuthor().equalsIgnoreCase("Ugly Post")) {
-                    return true;
-                }
+                if (book.getAuthor().equalsIgnoreCase("Ugly Post"))
+                    return i;
             }
         }
-
-        return false;
+        return -1;
     }
 
     private boolean inventoryIsFull(Player player) {
