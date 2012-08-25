@@ -25,6 +25,8 @@ import de.minestar.minestarlibrary.messages.Message;
 
 public class MailBox {
 
+    public static final String MAIL_BOX_HEAD = "Ugly Post";
+
     private int currentMessagePosition = 0;
     private ArrayList<Message> mailBox;
 

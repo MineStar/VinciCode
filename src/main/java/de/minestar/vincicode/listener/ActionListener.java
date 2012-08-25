@@ -47,7 +47,7 @@ public class ActionListener implements Listener {
             ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
             if (itemStack != null && itemStack.getType().equals(Material.WRITTEN_BOOK)) {
                 MinestarBook book = MinestarBook.loadBook(itemStack);
-                if (book.getAuthor().equalsIgnoreCase("Ugly Post")) {
+                if (book.getAuthor().equalsIgnoreCase(MailBox.MAIL_BOX_HEAD)) {
                     // get mailbox
                     MailBox mailBox = VinciCodeCore.messageManger.getMailBox(event.getPlayer().getName());
                     if (mailBox == null) {

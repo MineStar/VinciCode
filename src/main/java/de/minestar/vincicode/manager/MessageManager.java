@@ -84,7 +84,7 @@ public class MessageManager {
         MailBox mailBox = mailBoxMap.get(player.toLowerCase());
         MinestarBook myBook;
         if (mailBox == null) {
-            myBook = MinestarBook.createWrittenBook("Ugly Post", "Deine MailBox", Collections.<String> emptyList());
+            myBook = MinestarBook.createWrittenBook(MailBox.MAIL_BOX_HEAD, "Deine MailBox", Collections.<String> emptyList());
         } else {
             List<String> pages = new ArrayList<String>();
             List<Message> messages = mailBox.getAllMessages();
@@ -93,7 +93,7 @@ public class MessageManager {
                 Message message = messages.get(0);
                 pages = BookHelper.getPages(message);
             }
-            myBook = MinestarBook.createWrittenBook("Ugly Post", "Deine MailBox", pages);
+            myBook = MinestarBook.createWrittenBook(MailBox.MAIL_BOX_HEAD, "Deine MailBox", pages);
         }
 
         return myBook.getBukkitItemStack();

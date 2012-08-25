@@ -28,6 +28,7 @@ import de.minestar.minestarlibrary.commands.AbstractCommand;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
 import de.minestar.vincicode.core.VinciCodeCore;
+import de.minestar.vincicode.data.MailBox;
 
 public class cmdMailbox extends AbstractCommand {
 
@@ -79,7 +80,7 @@ public class cmdMailbox extends AbstractCommand {
             ItemStack itemStack = stacks[i];
             if (itemStack != null && itemStack.getType().equals(Material.WRITTEN_BOOK)) {
                 MinestarBook book = MinestarBook.loadBook(itemStack);
-                if (book.getAuthor().equalsIgnoreCase("Ugly Post"))
+                if (book.getAuthor().equalsIgnoreCase(MailBox.MAIL_BOX_HEAD))
                     return i;
             }
         }
@@ -89,5 +90,4 @@ public class cmdMailbox extends AbstractCommand {
     private boolean inventoryIsFull(Player player) {
         return player.getInventory().firstEmpty() == -1;
     }
-
 }
