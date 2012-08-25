@@ -21,7 +21,7 @@ package de.minestar.vincicode.util;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.Pattern;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 
@@ -55,10 +55,13 @@ public class BookHelper {
         }
     }
 
-    public static ArrayList<String> getPages(Message message) {
-        ArrayList<String> pages = new ArrayList<String>();
+    private final static int CHARS_PER_PAGE = 256;
 
-        StringBuilder stringBuilder = new StringBuilder(256);
+    public static List<String> getPages(Message message) {
+
+        List<String> pages = new ArrayList<String>();
+
+        StringBuilder stringBuilder = new StringBuilder(CHARS_PER_PAGE);
 
         // append sender
         BookHelper.appendText(stringBuilder, ChatColor.DARK_GREEN, null, "Absender: ");
@@ -79,43 +82,37 @@ public class BookHelper {
         stringBuilder.append("§r");
         stringBuilder.append("\n");
 
-        // TODO: Implement a method without a unneccessary split
-        // Use instead a search for space and substrings(mel has worked on one,
-        // but it was ugly as hell)
-        // Will be very more performant and use less memory
-        ArrayList<String> words = BookHelper.getWords(message.getMessage());
-        int count = 1;
-        for (String word : words) {
-            // MORE WORDS THAT CAN FIT ON ONE PAGE
-            if (stringBuilder.length() + word.length() > 256) {
-                // STORE CURRENT PAGE
-                pages.add(stringBuilder.toString());
-                // RESET STRING BUILDER
-                stringBuilder.setLength(0);
-                stringBuilder.setLength(256);
-            }
-            // APPEND WORD
-            stringBuilder.append(word);
-            // TODO : WHY WE CHECK THIS?!?
-            if (count < words.size()) {
-                stringBuilder.append(' ');
-            }
-        }
-
-        if (stringBuilder.length() > 0) {
+        // MAYBE SPLIT MESSAGE INTO MULTIPLE PAGES?
+        stringBuilder.append(message.getMessage());
+        // NO SPLIT
+        if (stringBuilder.length() < CHARS_PER_PAGE) {
             pages.add(stringBuilder.toString());
+        } else {
+            // SPLIT BY SPACE
+            while (stringBuilder.length() >= CHARS_PER_PAGE) {
+                // SEARCH FOR FIRST SPACE
+                int index = CHARS_PER_PAGE - 1;
+                for (; index >= 0; --index) {
+                    if (stringBuilder.charAt(index) == ' ') {
+                        break;
+                    }
+                }
+                // NO SPACE FOUND -> SPLIT AT FIXED POSITION
+                if (index == -1) {
+                    pages.add(stringBuilder.substring(0, index));
+                    stringBuilder = new StringBuilder(stringBuilder.substring(CHARS_PER_PAGE - 1));
+                }
+                // SPLIT BY SPACE
+                else {
+                    pages.add(stringBuilder.substring(0, index));
+                    stringBuilder = new StringBuilder(stringBuilder.substring(index + 1));
+                }
+            }
+            // ADD LAST PAGE
+            if (stringBuilder.length() != 0)
+                pages.add(stringBuilder.toString());
         }
+
         return pages;
-    }
-
-    private final static Pattern SPLIT_SPACE = Pattern.compile(" ");
-
-    private static ArrayList<String> getWords(String text) {
-        ArrayList<String> words = new ArrayList<String>();
-        String[] split = SPLIT_SPACE.split(text);
-        for (int i = 0; i < split.length; ++i)
-            words.add(split[i]);
-
-        return words;
     }
 }
