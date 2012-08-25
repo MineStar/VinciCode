@@ -65,7 +65,7 @@ public class MailBox {
         if (this.hasPrev()) {
             --currentMessagePosition;
             if (currentMessagePosition < 0) {
-                currentMessagePosition = 0;
+                currentMessagePosition = 1;
             }
             return this.mailBox.get(currentMessagePosition - 1);
         }
