@@ -84,7 +84,7 @@ public class ActionListener implements Listener {
                         if (mailBox.hasNext()) {
                             Message message = mailBox.next();
                             book.setPages(BookHelper.getPages(message));
-                            PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + mailBox.getCurrentMessagePosition() + " von " + mailBox.getMessageCount());
+                            PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + mailBox.getIndex() + " von " + mailBox.getMessageCount());
                         } else {
                             PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine weiteren Nachrichten.");
                         }
@@ -92,7 +92,7 @@ public class ActionListener implements Listener {
                         if (mailBox.hasPrev()) {
                             Message message = mailBox.prev();
                             book.setPages(BookHelper.getPages(message));
-                            PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + mailBox.getCurrentMessagePosition() + " von " + mailBox.getMessageCount());
+                            PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + mailBox.getIndex() + " von " + mailBox.getMessageCount());
                         } else {
                             PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine vorherigen Nachrichten.");
                         }

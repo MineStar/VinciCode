@@ -27,7 +27,7 @@ public class MailBox {
 
     public static final String MAIL_BOX_HEAD = "Ugly Post";
 
-    private int currentMessagePosition = 0;
+    private int index = -1;
     private ArrayList<Message> mailBox;
 
     private boolean newMessages;
@@ -45,31 +45,25 @@ public class MailBox {
     }
 
     public boolean hasNext() {
-        return currentMessagePosition < this.mailBox.size();
+        return index < this.mailBox.size() - 1;
     }
 
     public Message next() {
         if (this.hasNext()) {
-            ++currentMessagePosition;
-            if (currentMessagePosition > this.mailBox.size()) {
-                currentMessagePosition = this.mailBox.size();
-            }
-            return this.mailBox.get(currentMessagePosition - 1);
+            this.setIndex(this.index + 1);
+            return this.mailBox.get(index);
         }
         return null;
     }
 
     public boolean hasPrev() {
-        return currentMessagePosition > 1;
+        return index > 0;
     }
 
     public Message prev() {
         if (this.hasPrev()) {
-            --currentMessagePosition;
-            if (currentMessagePosition < 0) {
-                currentMessagePosition = 1;
-            }
-            return this.mailBox.get(currentMessagePosition - 1);
+            this.setIndex(this.index - 1);
+            return this.mailBox.get(index);
         }
         return null;
     }
@@ -79,8 +73,17 @@ public class MailBox {
         this.newMessages = true;
     }
 
-    public void deleteCurrent() {
-        mailBox.remove(this.currentMessagePosition - 1);
+    public void deleteCurrentMessage() {
+        if (this.index >= 0 && this.index < this.mailBox.size()) {
+            mailBox.remove(this.index);
+        }
+    }
+
+    public Message getCurrentMessage() {
+        if (this.index >= 0 && this.index < this.mailBox.size()) {
+            return this.mailBox.get(this.index);
+        }
+        return null;
     }
 
     public boolean hasNewMessages() {
@@ -109,8 +112,16 @@ public class MailBox {
         return this.mailBox.size();
     }
 
-    public int getCurrentMessagePosition() {
-        return currentMessagePosition;
+    public void setIndex(int index) {
+        if (this.index >= 0 && this.index < this.mailBox.size()) {
+            this.index = index;
+        } else {
+            this.index = -1;
+        }
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     @Override
