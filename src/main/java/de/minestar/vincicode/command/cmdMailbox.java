@@ -25,10 +25,12 @@ import org.bukkit.inventory.ItemStack;
 
 import de.minestar.minestarlibrary.bookapi.MinestarBook;
 import de.minestar.minestarlibrary.commands.AbstractCommand;
+import de.minestar.minestarlibrary.stats.StatisticHandler;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
 import de.minestar.vincicode.core.VinciCodeCore;
 import de.minestar.vincicode.data.MailBox;
+import de.minestar.vincicode.statistic.MailBoxStat;
 
 public class cmdMailbox extends AbstractCommand {
 
@@ -54,7 +56,11 @@ public class cmdMailbox extends AbstractCommand {
                     inv.setItem(index, temp);
                     player.setItemInHand(mailBoxItem);
                 }
+
                 PlayerUtils.sendSuccess(player, pluginName, "Deine Mailbox");
+
+                // FIRE STATISTIC
+                StatisticHandler.handleStatistic(new MailBoxStat(player.getName(), true));
                 return;
             } else {
                 ConsoleUtils.printError(pluginName, "Mailbox item is null but the index '" + index + "' was found!");
@@ -70,6 +76,9 @@ public class cmdMailbox extends AbstractCommand {
         mailBoxItem = VinciCodeCore.messageManger.getMailBoxItem(player.getName());
         player.setItemInHand(mailBoxItem);
         PlayerUtils.sendSuccess(player, pluginName, "Deine Mailbox");
+
+        // FIRE STATISTIC
+        StatisticHandler.handleStatistic(new MailBoxStat(player.getName(), false));
     }
 
     private int findMailBox(Player player) {
