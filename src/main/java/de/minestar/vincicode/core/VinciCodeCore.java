@@ -32,6 +32,7 @@ import de.minestar.vincicode.command.cmdReply;
 import de.minestar.vincicode.database.DatabaseHandler;
 import de.minestar.vincicode.listener.ActionListener;
 import de.minestar.vincicode.manager.MessageManager;
+import de.minestar.vincicode.statistic.MailBoxStat;
 import de.minestar.vincicode.statistic.WhisperStat;
 
 public class VinciCodeCore extends AbstractCore {
@@ -90,6 +91,7 @@ public class VinciCodeCore extends AbstractCore {
     @Override
     protected boolean registerStatistics() {
         StatisticHandler.registerStatistic(WhisperStat.class);
+        StatisticHandler.registerStatistic(MailBoxStat.class);
         return true;
     }
 

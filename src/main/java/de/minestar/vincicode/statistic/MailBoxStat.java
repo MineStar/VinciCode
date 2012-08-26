@@ -27,21 +27,19 @@ import de.minestar.minestarlibrary.stats.Statistic;
 import de.minestar.minestarlibrary.stats.StatisticType;
 import de.minestar.vincicode.core.VinciCodeCore;
 
-public class WhisperStat implements Statistic {
+public class MailBoxStat implements Statistic {
 
-    private String sender;
-    private String receiver;
-    private String message;
+    private String player;
+    private boolean wasInInventory;
     private Timestamp date;
 
-    public WhisperStat() {
+    public MailBoxStat() {
         // EMPTY CONSTRUCTOR FOR REFLECTION ACCESS
     }
 
-    public WhisperStat(String sender, String receiver, String message) {
-        this.sender = sender;
-        this.receiver = receiver;
-        this.message = message;
+    public MailBoxStat(String player, boolean wasInInventory) {
+        this.player = player;
+        this.wasInInventory = wasInInventory;
         this.date = new Timestamp(System.currentTimeMillis());
     }
 
@@ -60,9 +58,8 @@ public class WhisperStat implements Statistic {
 
         LinkedHashMap<String, StatisticType> head = new LinkedHashMap<String, StatisticType>();
 
-        head.put("sender,", StatisticType.STRING);
-        head.put("receiver,", StatisticType.STRING);
-        head.put("message,", StatisticType.STRING);
+        head.put("player,", StatisticType.STRING);
+        head.put("wasInInventory", StatisticType.INT);
         head.put("date", StatisticType.DATETIME);
 
         return head;
@@ -73,9 +70,8 @@ public class WhisperStat implements Statistic {
 
         Queue<Object> data = new LinkedList<Object>();
 
-        data.add(sender);
-        data.add(receiver);
-        data.add(message);
+        data.add(player);
+        data.add(wasInInventory ? 1 : 0);
         data.add(date);
 
         return data;
