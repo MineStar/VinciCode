@@ -19,10 +19,13 @@
 package de.minestar.vincicode.listener;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import de.minestar.minestarlibrary.bookapi.MinestarBook;
@@ -84,7 +87,7 @@ public class ActionListener implements Listener {
                         if (mailBox.hasNext()) {
                             Message message = mailBox.next();
                             book.setPages(BookHelper.getPages(message));
-                            PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + mailBox.getIndex() + " von " + mailBox.getMessageCount());
+                            PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
                         } else {
                             PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine weiteren Nachrichten.");
                         }
@@ -92,7 +95,7 @@ public class ActionListener implements Listener {
                         if (mailBox.hasPrev()) {
                             Message message = mailBox.prev();
                             book.setPages(BookHelper.getPages(message));
-                            PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + mailBox.getIndex() + " von " + mailBox.getMessageCount());
+                            PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
                         } else {
                             PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine vorherigen Nachrichten.");
                         }

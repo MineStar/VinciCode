@@ -27,7 +27,7 @@ public class MailBox {
 
     public static final String MAIL_BOX_HEAD = "Ugly Post";
 
-    private int index = -1;
+    private int index = 0;
     private ArrayList<Message> mailBox;
 
     private boolean newMessages;
@@ -45,7 +45,7 @@ public class MailBox {
     }
 
     public boolean hasNext() {
-        return index < this.mailBox.size() - 1;
+        return index >= 0 && index < this.mailBox.size();
     }
 
     public Message next() {
@@ -57,7 +57,7 @@ public class MailBox {
     }
 
     public boolean hasPrev() {
-        return index > 0;
+        return index > 0 && index <= this.mailBox.size() - 1;
     }
 
     public Message prev() {
