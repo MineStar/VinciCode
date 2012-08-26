@@ -54,7 +54,7 @@ public class cmdMailbox extends AbstractCommand {
                     inv.setItem(index, temp);
                     player.setItemInHand(mailBoxItem);
                 }
-                PlayerUtils.sendError(player, pluginName, "Deine Mailbox");
+                PlayerUtils.sendSuccess(player, pluginName, "Deine Mailbox");
                 return;
             } else {
                 ConsoleUtils.printError(pluginName, "Mailbox item is null but the index '" + index + "' was found!");
