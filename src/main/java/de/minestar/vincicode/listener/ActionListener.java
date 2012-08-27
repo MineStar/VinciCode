@@ -23,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import de.minestar.minestarlibrary.bookapi.MinestarBook;
@@ -33,6 +34,19 @@ import de.minestar.vincicode.data.MailBox;
 import de.minestar.vincicode.util.BookHelper;
 
 public class ActionListener implements Listener {
+
+    private void swapItems(Inventory inventory, int oldSlot, int newSlot) {
+        // SWAP ITEMS
+        ItemStack newItem = inventory.getItem(newSlot);
+        ItemStack oldItem = inventory.getItem(oldSlot);
+        if (newItem != null && !newItem.getType().equals(Material.AIR)) {
+            newItem = newItem.clone();
+        }
+
+        // finally swap
+        inventory.setItem(newSlot, oldItem);
+        inventory.setItem(oldSlot, newItem);
+    }
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
@@ -54,28 +68,13 @@ public class ActionListener implements Listener {
                         PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Du hast keine Nachrichten!");
 
                         // SWAP ITEMS
-                        ItemStack newSlot = event.getPlayer().getInventory().getItem(event.getNewSlot());
-                        ItemStack oldSlot = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
-                        if (newSlot != null && !newSlot.getType().equals(Material.AIR)) {
-                            newSlot = newSlot.clone();
-                        }
-
-                        // finally swap
-                        event.getPlayer().getInventory().setItem(event.getNewSlot(), oldSlot);
-                        event.getPlayer().getInventory().setItem(event.getPreviousSlot(), newSlot);
+                        this.swapItems(event.getPlayer().getInventory(), event.getNewSlot(), event.getPreviousSlot());
                         return;
                     }
 
                     boolean forward = false;
                     if ((event.getNewSlot() == 0 && event.getPreviousSlot() == 8) || (event.getNewSlot() > event.getPreviousSlot() && event.getPreviousSlot() != 0)) {
                         forward = true;
-                    }
-
-                    // get changed items
-                    ItemStack newSlot = event.getPlayer().getInventory().getItem(event.getNewSlot());
-                    ItemStack oldSlot = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
-                    if (newSlot != null && !newSlot.getType().equals(Material.AIR)) {
-                        newSlot = newSlot.clone();
                     }
 
                     if (forward) {
@@ -97,8 +96,7 @@ public class ActionListener implements Listener {
                     }
 
                     // SWAP ITEMS
-                    event.getPlayer().getInventory().setItem(event.getNewSlot(), oldSlot);
-                    event.getPlayer().getInventory().setItem(event.getPreviousSlot(), newSlot);
+                    this.swapItems(event.getPlayer().getInventory(), event.getNewSlot(), event.getPreviousSlot());;
                 }
             }
         }
