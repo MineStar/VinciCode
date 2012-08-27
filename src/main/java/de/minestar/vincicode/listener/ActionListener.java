@@ -67,9 +67,7 @@ public class ActionListener implements Listener {
                     }
 
                     boolean forward = false;
-                    if (event.getNewSlot() == 0 && event.getPreviousSlot() == 8) {
-                        forward = true;
-                    } else if (event.getNewSlot() > event.getPreviousSlot() && (event.getPreviousSlot() != 0)) {
+                    if ((event.getNewSlot() == 0 && event.getPreviousSlot() == 8) || (event.getNewSlot() > event.getPreviousSlot() && event.getPreviousSlot() != 0)) {
                         forward = true;
                     }
 
