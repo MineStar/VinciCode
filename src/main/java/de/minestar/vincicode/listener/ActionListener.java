@@ -80,7 +80,7 @@ public class ActionListener implements Listener {
                     if (forward) {
                         if (mailBox.hasNext()) {
                             Message message = mailBox.next();
-                            book.setPages(BookHelper.getPages(message));
+                            book.setPages(BookHelper.format(message));
                             PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
                         } else {
                             PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine weiteren Nachrichten.");
@@ -88,7 +88,7 @@ public class ActionListener implements Listener {
                     } else {
                         if (mailBox.hasPrev()) {
                             Message message = mailBox.prev();
-                            book.setPages(BookHelper.getPages(message));
+                            book.setPages(BookHelper.format(message));
                             PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
                         } else {
                             PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine vorherigen Nachrichten.");

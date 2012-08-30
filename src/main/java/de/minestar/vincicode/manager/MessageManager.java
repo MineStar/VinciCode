@@ -91,7 +91,7 @@ public class MessageManager {
 
             if (messages.size() > 0) {
                 Message message = messages.get(0);
-                pages = BookHelper.getPages(message);
+                pages = BookHelper.format(message);
             }
             myBook = MinestarBook.createWrittenBook(MailBox.MAIL_BOX_HEAD, "Deine MailBox", pages);
         }
