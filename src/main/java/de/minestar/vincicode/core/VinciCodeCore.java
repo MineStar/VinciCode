@@ -36,7 +36,6 @@ import de.minestar.vincicode.statistic.MailBoxStat;
 import de.minestar.vincicode.statistic.WhisperStat;
 
 public class VinciCodeCore extends AbstractCore {
-//public class VinciCodeCore extends AbstractCore implements Listener {
 
     public static final String NAME = "VinciCode";
 

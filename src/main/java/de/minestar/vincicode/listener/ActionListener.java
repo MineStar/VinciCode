@@ -57,49 +57,47 @@ public class ActionListener implements Listener {
 
     @EventHandler
     public void onItemHeldChange(PlayerItemHeldEvent event) {
-        if (event.getPlayer().isSneaking()) {
-            ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
-            if (itemStack != null && itemStack.getType().equals(Material.WRITTEN_BOOK)) {
-                MinestarBook book = MinestarBook.loadBook(itemStack);
-                if (book.getAuthor().equalsIgnoreCase(MailBox.MAIL_BOX_HEAD)) {
-                    // get mailbox
-                    MailBox mailBox = VinciCodeCore.messageManger.getMailBox(event.getPlayer().getName());
-                    if (mailBox == null) {
-                        PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Du hast keine Nachrichten!");
+        if (!event.getPlayer().isSneaking())
+            return;
+        
+        ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
+        if (itemStack == null || itemStack.getType().equals(Material.WRITTEN_BOOK))
+            return;
+        
+        MinestarBook book = MinestarBook.loadBook(itemStack);
+        if (book.getAuthor().equalsIgnoreCase(MailBox.MAIL_BOX_HEAD)) {
+            // get mailbox
+            MailBox mailBox = VinciCodeCore.messageManger.getMailBox(event.getPlayer().getName());
+            if (mailBox == null) {
+                PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Du hast keine Nachrichten!");
 
-                        // SWAP ITEMS
-                        this.swapItems(event.getPlayer().getInventory(), event.getNewSlot(), event.getPreviousSlot());
-                        return;
-                    }
+                // SWAP ITEMS
+                this.swapItems(event.getPlayer().getInventory(), event.getNewSlot(), event.getPreviousSlot());
+                return;
+            }
 
-                    boolean forward = false;
-                    if ((event.getNewSlot() == 0 && event.getPreviousSlot() == 8) || (event.getNewSlot() > event.getPreviousSlot() && event.getPreviousSlot() != 0)) {
-                        forward = true;
-                    }
+            boolean forward = (event.getNewSlot() == 0 && event.getPreviousSlot() == 8) || (event.getNewSlot() > event.getPreviousSlot() && event.getPreviousSlot() != 0);
 
-                    if (forward) {
-                        if (mailBox.hasNext()) {
-                            Message message = mailBox.next();
-                            book.setPages(BookHelper.format(message));
-                            PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
-                        } else {
-                            PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine weiteren Nachrichten.");
-                        }
-                    } else {
-                        if (mailBox.hasPrev()) {
-                            Message message = mailBox.prev();
-                            book.setPages(BookHelper.format(message));
-                            PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
-                        } else {
-                            PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine vorherigen Nachrichten.");
-                        }
-                    }
-
-                    // SWAP ITEMS
-                    this.swapItems(event.getPlayer().getInventory(), event.getNewSlot(), event.getPreviousSlot());;
+            if (forward) {
+                if (mailBox.hasNext()) {
+                    Message message = mailBox.next();
+                    book.setPages(BookHelper.format(message));
+                    PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
+                } else {
+                    PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine weiteren Nachrichten.");
+                }
+            } else {
+                if (mailBox.hasPrev()) {
+                    Message message = mailBox.prev();
+                    book.setPages(BookHelper.format(message));
+                    PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
+                } else {
+                    PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine vorherigen Nachrichten.");
                 }
             }
-        }
 
+            // SWAP ITEMS
+            this.swapItems(event.getPlayer().getInventory(), event.getNewSlot(), event.getPreviousSlot());;
+        }
     }
 }
