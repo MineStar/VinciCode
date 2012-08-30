@@ -63,6 +63,17 @@ public class BookHelper {
         sBuilder.append(ChatColor.BLACK);
     }
 
+    public static char LINE_SEPARATOR = '\n';
+
+    public static void newLine(StringBuilder sBuilder) {
+        sBuilder.append(LINE_SEPARATOR);
+    }
+
+    public static void emptyLine(StringBuilder sBuilder) {
+        sBuilder.append("§r");
+        sBuilder.append(LINE_SEPARATOR);
+    }
+
     public static List<String> format(Message message) {
         return format(message, DefaultFormat.getInstance());
     }

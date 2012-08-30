@@ -27,18 +27,18 @@ import org.bukkit.ChatColor;
 import de.minestar.minestarlibrary.messages.Message;
 import de.minestar.vincicode.util.BookHelper;
 
-public class DefaultFormat implements MessageFormat {
+public class OfficialFormat implements MessageFormat {
 
-    private static DefaultFormat instance;
+    private static OfficialFormat instance;
 
-    public static DefaultFormat getInstance() {
+    public static OfficialFormat getInstance() {
         if (instance == null)
-            instance = new DefaultFormat();
+            instance = new OfficialFormat();
 
         return instance;
     }
 
-    private DefaultFormat() {
+    private OfficialFormat() {
 
     }
 
@@ -51,6 +51,9 @@ public class DefaultFormat implements MessageFormat {
     @Override
     public StringBuilder formatHead(Message message) {
         StringBuilder stringBuilder = new StringBuilder(BookHelper.CHARS_PER_PAGE);
+
+        BookHelper.appendColoredText(stringBuilder, ChatColor.DARK_RED, "Offiziel");
+        BookHelper.newLine(stringBuilder);
 
         // append sender
         BookHelper.appendColoredText(stringBuilder, ChatColor.DARK_GREEN, "Absender: ");
@@ -96,11 +99,17 @@ public class DefaultFormat implements MessageFormat {
                 if (index == -1) {
                     pages.add(sBuilder.substring(0, index));
                     sBuilder = new StringBuilder(sBuilder.substring(BookHelper.CHARS_PER_PAGE - 1));
+                    // FIRST CHAr OF NEXT PAGE IS CAPITAL LETTER
+                    if (sBuilder.length() > 0)
+                        sBuilder.setCharAt(0, Character.toLowerCase(sBuilder.charAt(0)));
                 }
                 // SPLIT BY SPACE
                 else {
                     pages.add(sBuilder.substring(0, index));
                     sBuilder = new StringBuilder(sBuilder.substring(index + 1));
+                    // FIRST CHAr OF NEXT PAGE IS CAPITAL LETTER
+                    if (sBuilder.length() > 0)
+                        sBuilder.setCharAt(0, Character.toLowerCase(sBuilder.charAt(0)));
                 }
             }
             // ADD LAST PAGE
