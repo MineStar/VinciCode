@@ -80,6 +80,14 @@ public class MessageManager {
         return mailBox != null && mailBox.hasNewMessages();
     }
 
+    public int getNewMessageCount(String player) {
+        MailBox mailBox = mailBoxMap.get(player.toLowerCase());
+        if (mailBox == null) {
+            return 0;
+        }
+        return mailBox.getNewMessageCount();
+    }
+
     public ItemStack getMailBoxItem(String player) {
         MailBox mailBox = mailBoxMap.get(player.toLowerCase());
         MinestarBook myBook;

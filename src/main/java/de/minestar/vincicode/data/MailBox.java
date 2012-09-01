@@ -134,4 +134,14 @@ public class MailBox {
 
         return sBuilder.toString();
     }
+
+    public int getNewMessageCount() {
+        int count = 0;
+        for (Message message : mailBox) {
+            if (!message.isRead()) {
+                count++;
+            }
+        }
+        return count;
+    }
 }

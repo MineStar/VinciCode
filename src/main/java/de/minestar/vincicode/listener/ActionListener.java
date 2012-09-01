@@ -18,6 +18,7 @@
 
 package de.minestar.vincicode.listener;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -51,7 +52,13 @@ public class ActionListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (VinciCodeCore.messageManger.hasNewMessage(event.getPlayer().getName())) {
-            PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Sie haben Post.");
+            int newMessages = VinciCodeCore.messageManger.getNewMessageCount(event.getPlayer().getName());
+            String message = "Sie haben " + ChatColor.BOLD + newMessages + ChatColor.GRAY + " neue Nachricht";
+            if (newMessages > 1) {
+                message += "en";
+            }
+            message += ".";
+            PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, message);
         }
     }
 
