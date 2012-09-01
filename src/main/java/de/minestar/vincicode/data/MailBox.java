@@ -64,7 +64,7 @@ public class MailBox {
 
     public void add(Message message) {
         mailBox.add(message);
-        this.newMessages = this.newMessages || message.isRead();
+        this.newMessages = this.newMessages || !message.isRead();
     }
 
     public void deleteCurrentMessage() {
