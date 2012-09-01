@@ -38,12 +38,6 @@ public class MailBox {
         this.newMessages = false;
     }
 
-    // MAIL BOX FROM DATABASE
-    public MailBox(List<Message> messages) {
-        mailBox = new ArrayList<Message>(messages);
-        searchForNewMessages();
-    }
-
     public boolean hasNext() {
         return index >= 0 && index < this.mailBox.size();
     }
@@ -70,7 +64,7 @@ public class MailBox {
 
     public void add(Message message) {
         mailBox.add(message);
-        this.newMessages = true;
+        searchForNewMessages();
     }
 
     public void deleteCurrentMessage() {

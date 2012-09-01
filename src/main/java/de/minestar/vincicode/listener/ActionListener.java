@@ -59,11 +59,11 @@ public class ActionListener implements Listener {
     public void onItemHeldChange(PlayerItemHeldEvent event) {
         if (!event.getPlayer().isSneaking())
             return;
-        
+
         ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
         if (itemStack == null || itemStack.getType().equals(Material.WRITTEN_BOOK))
             return;
-        
+
         MinestarBook book = MinestarBook.loadBook(itemStack);
         if (book.getAuthor().equalsIgnoreCase(MailBox.MAIL_BOX_HEAD)) {
             // get mailbox

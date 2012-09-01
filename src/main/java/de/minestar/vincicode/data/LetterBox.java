@@ -37,7 +37,7 @@ public class LetterBox {
         this(inventory, new HashSet<Subscription>());
     }
 
-    // 
+    //
     public LetterBox(Inventory inventory, Set<Subscription> subscriptions) {
         this.inventory = inventory;
         this.subscriptions = subscriptions;
