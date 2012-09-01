@@ -39,7 +39,7 @@ public class MailBox {
     }
 
     public boolean hasNext() {
-        return index >= 0 && index < this.mailBox.size();
+        return index >= 0 && index < this.mailBox.size() - 1;
     }
 
     public Message next() {
@@ -51,7 +51,7 @@ public class MailBox {
     }
 
     public boolean hasPrev() {
-        return index > 0 && index <= this.mailBox.size() - 1;
+        return index > 0 && index < this.mailBox.size();
     }
 
     public Message prev() {

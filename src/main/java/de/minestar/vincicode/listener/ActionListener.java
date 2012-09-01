@@ -22,7 +22,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -49,7 +49,7 @@ public class ActionListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerLogin(PlayerLoginEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         if (VinciCodeCore.messageManger.hasNewMessage(event.getPlayer().getName())) {
             PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Sie haben Post.");
         }
@@ -61,7 +61,7 @@ public class ActionListener implements Listener {
             return;
 
         ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
-        if (itemStack == null || itemStack.getType().equals(Material.WRITTEN_BOOK))
+        if (itemStack == null || !itemStack.getType().equals(Material.WRITTEN_BOOK))
             return;
 
         MinestarBook book = MinestarBook.loadBook(itemStack);
