@@ -53,7 +53,7 @@ public class ActionListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (VinciCodeCore.messageManger.hasNewMessage(event.getPlayer().getName())) {
             int newMessages = VinciCodeCore.messageManger.getNewMessageCount(event.getPlayer().getName());
-            String message = "Sie haben " + ChatColor.BOLD + newMessages + ChatColor.GRAY + " neue Nachricht";
+            String message = "Sie haben " + ChatColor.GOLD + ChatColor.BOLD + newMessages + ChatColor.RESET + ChatColor.GRAY + " neue Nachricht";
             if (newMessages > 1) {
                 message += "en";
             }
