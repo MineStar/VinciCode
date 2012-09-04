@@ -143,6 +143,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             updateMessageRead.setLong(2, message.getTimestamp());
             updateMessageRead.setString(3, message.getSender());
             updateMessageRead.setString(4, message.getTarget());
+            System.out.println(updateMessageRead.toString());
             return updateMessageRead.executeUpdate() == 1;
         } catch (Exception e) {
             ConsoleUtils.printException(e, VinciCodeCore.NAME, "Can't set message read status to database! Message =" + message);

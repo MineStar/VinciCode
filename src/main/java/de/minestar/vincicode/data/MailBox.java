@@ -89,7 +89,7 @@ public class MailBox {
         searchForNewMessages();
     }
 
-    private void searchForNewMessages() {
+    public void searchForNewMessages() {
         for (Message message : mailBox) {
             if (!message.isRead()) {
                 this.newMessages = true;

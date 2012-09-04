@@ -20,8 +20,10 @@ package de.minestar.vincicode.listener;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
@@ -50,11 +52,61 @@ public class ActionListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (!event.getPlayer().isSneaking())
+            return;
+
+        ItemStack itemStack = event.getPlayer().getItemInHand();
+        if (itemStack == null || !itemStack.getType().equals(Material.WRITTEN_BOOK))
+            return;
+
+        MinestarBook book = MinestarBook.loadBook(itemStack);
+        if (book.getAuthor().equalsIgnoreCase(MailBox.MAIL_BOX_HEAD)) {
+            event.setCancelled(true);
+            event.setUseInteractedBlock(Event.Result.DENY);
+            event.setUseItemInHand(Event.Result.DENY);
+
+            // get mailbox
+            MailBox mailBox = VinciCodeCore.messageManger.getMailBox(event.getPlayer().getName());
+            if (mailBox == null) {
+                PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Du hast keine Nachrichten!");
+                return;
+            }
+
+            Message message = mailBox.getCurrentMessage();
+            boolean result = false;
+            if (message != null && !message.isRead() && (result = VinciCodeCore.dbHandler.setMessageRead(message))) {
+                System.out.println("result: " + result);
+                message.setRead(true);
+                mailBox.searchForNewMessages();
+
+                PlayerUtils.sendSuccess(event.getPlayer(), VinciCodeCore.NAME, "Die Nachricht wurde als gelesen markiert.");
+                int newCount = mailBox.getNewMessageCount();
+
+                String messageText = "Du hast " + ChatColor.GOLD + ChatColor.BOLD + newCount + ChatColor.RESET + ChatColor.GRAY + " neue Nachricht";
+                if (newCount != 1) {
+                    messageText += "en";
+                }
+                messageText += ".";
+                PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, messageText);
+
+                if (mailBox.hasNext()) {
+                    message = mailBox.next();
+                    book.setPages(BookHelper.format(message));
+                    PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
+                } else {
+                    PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine weiteren Nachrichten.");
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (VinciCodeCore.messageManger.hasNewMessage(event.getPlayer().getName())) {
             int newMessages = VinciCodeCore.messageManger.getNewMessageCount(event.getPlayer().getName());
-            String message = "Sie haben " + ChatColor.GOLD + ChatColor.BOLD + newMessages + ChatColor.RESET + ChatColor.GRAY + " neue Nachricht";
-            if (newMessages > 1) {
+            String message = "Du hast " + ChatColor.GOLD + ChatColor.BOLD + newMessages + ChatColor.RESET + ChatColor.GRAY + " neue Nachricht";
+            if (newMessages != 1) {
                 message += "en";
             }
             message += ".";
