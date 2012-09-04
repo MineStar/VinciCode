@@ -125,12 +125,15 @@ public class ActionListener implements Listener {
                 if (mailBox.hasNext()) {
                     Message message = mailBox.next();
                     book.setPages(BookHelper.format(message));
-                    PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
-                    if (!message.isRead()) {
-                        PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "NEU");
+
+                    String text = "Nachricht ";
+                    if (message.isRead()) {
+                        text += "" + ChatColor.GOLD + (mailBox.getIndex() + 1) + ChatColor.GRAY;
                     } else {
-                        PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "ALT");
+                        text += "" + ChatColor.RED + (mailBox.getIndex() + 1) + ChatColor.GRAY;
                     }
+                    text += " von " + mailBox.getMessageCount();
+                    PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, text);
                 } else {
                     PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine weiteren Nachrichten.");
                 }
@@ -138,12 +141,14 @@ public class ActionListener implements Listener {
                 if (mailBox.hasPrev()) {
                     Message message = mailBox.prev();
                     book.setPages(BookHelper.format(message));
-                    PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
-                    if (!message.isRead()) {
-                        PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "NEU");
+                    String text = "Nachricht ";
+                    if (message.isRead()) {
+                        text += "" + ChatColor.GOLD + (mailBox.getIndex() - 1) + ChatColor.GRAY;
                     } else {
-                        PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "ALT");
+                        text += "" + ChatColor.RED + (mailBox.getIndex() - 1) + ChatColor.GRAY;
                     }
+                    text += " von " + mailBox.getMessageCount();
+                    PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, text);
                 } else {
                     PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine vorherigen Nachrichten.");
                 }
