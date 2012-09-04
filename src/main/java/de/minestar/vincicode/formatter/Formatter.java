@@ -20,6 +20,7 @@ package de.minestar.vincicode.formatter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,8 +58,13 @@ public class Formatter {
     public static List<String> format(Message message) {
         MessageFormat format = formatMap.get(message.getClass());
         if (format == null) {
-            ConsoleUtils.printError(VinciCodeCore.NAME, "The message class '" + message.getClass() + "' has no formatter! Using default formatter!");
             format = getInstance(DefaultFormat.class);
+            if (format == null) {
+                List<String> list = new LinkedList<String>();
+                list.add("Fehler beim Laden des Standard Formats!");
+                return list;
+            } else
+                ConsoleUtils.printError(VinciCodeCore.NAME, "The message class '" + message.getClass() + "' has no formatter! Using default formatter!");
         }
 
         StringBuilder sBuilder = new StringBuilder(format.formatHead(message));
