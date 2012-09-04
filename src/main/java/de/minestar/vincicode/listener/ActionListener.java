@@ -119,7 +119,7 @@ public class ActionListener implements Listener {
                 return;
             }
 
-            boolean forward = (event.getNewSlot() == 0 && event.getPreviousSlot() == 8) || (event.getNewSlot() > event.getPreviousSlot() && event.getPreviousSlot() != 0);
+            boolean forward = (event.getNewSlot() == 0 && event.getPreviousSlot() == 8) || (event.getNewSlot() > event.getPreviousSlot() && !(event.getPreviousSlot() == 0 && event.getNewSlot() == 8));
 
             if (forward) {
                 if (mailBox.hasNext()) {
@@ -143,9 +143,9 @@ public class ActionListener implements Listener {
                     book.setPages(BookHelper.format(message));
                     String text = "Nachricht ";
                     if (message.isRead()) {
-                        text += "" + ChatColor.GOLD + (mailBox.getIndex() - 1) + ChatColor.GRAY;
+                        text += "" + ChatColor.GOLD + (mailBox.getIndex() + 1) + ChatColor.GRAY;
                     } else {
-                        text += "" + ChatColor.RED + (mailBox.getIndex() - 1) + ChatColor.GRAY;
+                        text += "" + ChatColor.RED + (mailBox.getIndex() + 1) + ChatColor.GRAY;
                     }
                     text += " von " + mailBox.getMessageCount();
                     PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, text);
