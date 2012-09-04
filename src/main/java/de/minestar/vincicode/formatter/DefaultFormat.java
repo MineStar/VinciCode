@@ -18,9 +18,7 @@
 
 package de.minestar.vincicode.formatter;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.bukkit.ChatColor;
 
@@ -29,27 +27,8 @@ import de.minestar.vincicode.util.BookHelper;
 
 public class DefaultFormat implements MessageFormat {
 
-    private static DefaultFormat instance;
-
-    public static DefaultFormat getInstance() {
-        if (instance == null)
-            instance = new DefaultFormat();
-
-        return instance;
-    }
-
-    private DefaultFormat() {
-
-    }
-
     @Override
-    public List<String> format(Message message) {
-        StringBuilder sBuilder = formatHead(message);
-        return formatBody(sBuilder, message);
-    }
-
-    @Override
-    public StringBuilder formatHead(Message message) {
+    public String formatHead(Message message) {
         StringBuilder stringBuilder = new StringBuilder(BookHelper.CHARS_PER_PAGE);
 
         // append sender
@@ -70,45 +49,12 @@ public class DefaultFormat implements MessageFormat {
         // append empty line
         BookHelper.emptyLine(stringBuilder);
 
-        return stringBuilder;
+        return stringBuilder.toString();
     }
 
     @Override
-    public List<String> formatBody(StringBuilder sBuilder, Message message) {
-
-        List<String> pages = new ArrayList<String>();
-        // MAYBE SPLIT MESSAGE INTO MULTIPLE PAGES?
-        sBuilder.append(message.getMessage());
-        // NO SPLIT
-        if (sBuilder.length() < BookHelper.CHARS_PER_PAGE) {
-            pages.add(sBuilder.toString());
-        } else {
-            // SPLIT BY SPACE
-            while (sBuilder.length() >= BookHelper.CHARS_PER_PAGE) {
-                // SEARCH FOR FIRST SPACE
-                int index = BookHelper.CHARS_PER_PAGE - 1;
-                for (; index >= 0; --index) {
-                    if (sBuilder.charAt(index) == ' ') {
-                        break;
-                    }
-                }
-                // NO SPACE FOUND -> SPLIT AT FIXED POSITION
-                if (index == -1) {
-                    pages.add(sBuilder.substring(0, index));
-                    sBuilder = new StringBuilder(sBuilder.substring(BookHelper.CHARS_PER_PAGE - 1));
-                }
-                // SPLIT BY SPACE
-                else {
-                    pages.add(sBuilder.substring(0, index));
-                    sBuilder = new StringBuilder(sBuilder.substring(index + 1));
-                }
-            }
-            // ADD LAST PAGE
-            if (sBuilder.length() != 0)
-                pages.add(sBuilder.toString());
-        }
-
-        return pages;
+    public String formatBody(Message message) {
+        return message.getMessage();
     }
 
 }

@@ -34,7 +34,7 @@ import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
 import de.minestar.vincicode.core.VinciCodeCore;
 import de.minestar.vincicode.data.MailBox;
-import de.minestar.vincicode.util.BookHelper;
+import de.minestar.vincicode.formatter.Formatter;
 
 public class MessageManager {
 
@@ -99,7 +99,7 @@ public class MessageManager {
 
             if (messages.size() > 0) {
                 Message message = messages.get(0);
-                pages = BookHelper.format(message);
+                pages = Formatter.format(message);
             }
             myBook = MinestarBook.createWrittenBook(MailBox.MAIL_BOX_HEAD, "Deine MailBox", pages);
         }

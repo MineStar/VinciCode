@@ -19,13 +19,8 @@
 package de.minestar.vincicode.util;
 
 import java.text.DateFormat;
-import java.util.List;
 
 import org.bukkit.ChatColor;
-
-import de.minestar.minestarlibrary.messages.Message;
-import de.minestar.vincicode.formatter.DefaultFormat;
-import de.minestar.vincicode.formatter.MessageFormat;
 
 public class BookHelper {
 
@@ -72,13 +67,5 @@ public class BookHelper {
     public static void emptyLine(StringBuilder sBuilder) {
         sBuilder.append("§r");
         sBuilder.append(LINE_SEPARATOR);
-    }
-
-    public static List<String> format(Message message) {
-        return format(message, DefaultFormat.getInstance());
-    }
-
-    public static List<String> format(Message message, MessageFormat format) {
-        return format.format(message);
     }
 }

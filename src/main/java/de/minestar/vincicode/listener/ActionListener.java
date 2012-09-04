@@ -35,7 +35,7 @@ import de.minestar.minestarlibrary.messages.Message;
 import de.minestar.minestarlibrary.utils.PlayerUtils;
 import de.minestar.vincicode.core.VinciCodeCore;
 import de.minestar.vincicode.data.MailBox;
-import de.minestar.vincicode.util.BookHelper;
+import de.minestar.vincicode.formatter.Formatter;
 
 public class ActionListener implements Listener {
 
@@ -124,7 +124,7 @@ public class ActionListener implements Listener {
             if (forward) {
                 if (mailBox.hasNext()) {
                     Message message = mailBox.next();
-                    book.setPages(BookHelper.format(message));
+                    book.setPages(Formatter.format(message));
 
                     String text = "Nachricht ";
                     if (message.isRead()) {
@@ -140,7 +140,7 @@ public class ActionListener implements Listener {
             } else {
                 if (mailBox.hasPrev()) {
                     Message message = mailBox.prev();
-                    book.setPages(BookHelper.format(message));
+                    book.setPages(Formatter.format(message));
                     String text = "Nachricht ";
                     if (message.isRead()) {
                         text += "" + ChatColor.GOLD + (mailBox.getIndex() + 1) + ChatColor.GRAY;

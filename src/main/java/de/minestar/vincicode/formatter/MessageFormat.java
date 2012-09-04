@@ -18,15 +18,11 @@
 
 package de.minestar.vincicode.formatter;
 
-import java.util.List;
-
 import de.minestar.minestarlibrary.messages.Message;
 
 public interface MessageFormat {
 
-    public List<String> format(Message message);
+    public String formatHead(Message message);
 
-    public StringBuilder formatHead(Message message);
-
-    public List<String> formatBody(StringBuilder sBuilder, Message message);
+    public String formatBody(Message message);
 }
