@@ -31,7 +31,7 @@ public class OfficialFormat implements MessageFormat {
     public String formatHead(Message message) {
         StringBuilder stringBuilder = new StringBuilder(BookHelper.CHARS_PER_PAGE);
 
-        BookHelper.appendColoredText(stringBuilder, ChatColor.DARK_RED, "++Offiziel++");
+        BookHelper.appendColoredText(stringBuilder, ChatColor.DARK_RED, "++Offiziell++");
         BookHelper.newLine(stringBuilder);
 
         // append sender
