@@ -85,7 +85,7 @@ public class MailBox {
     }
 
     public void markAsRead(Message message) {
-        message.setRead(false);
+        message.setRead(true);
         searchForNewMessages();
     }
 

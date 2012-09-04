@@ -23,6 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -53,8 +54,9 @@ public class ActionListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!event.getPlayer().isSneaking())
+        if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             return;
+        }
 
         ItemStack itemStack = event.getPlayer().getItemInHand();
         if (itemStack == null || !itemStack.getType().equals(Material.WRITTEN_BOOK))
@@ -74,28 +76,10 @@ public class ActionListener implements Listener {
             }
 
             Message message = mailBox.getCurrentMessage();
-            boolean result = false;
-            if (message != null && !message.isRead() && (result = VinciCodeCore.dbHandler.setMessageRead(message))) {
-                System.out.println("result: " + result);
-                message.setRead(true);
-                mailBox.searchForNewMessages();
-
-                PlayerUtils.sendSuccess(event.getPlayer(), VinciCodeCore.NAME, "Die Nachricht wurde als gelesen markiert.");
-                int newCount = mailBox.getNewMessageCount();
-
-                String messageText = "Du hast " + ChatColor.GOLD + ChatColor.BOLD + newCount + ChatColor.RESET + ChatColor.GRAY + " neue Nachricht";
-                if (newCount != 1) {
-                    messageText += "en";
-                }
-                messageText += ".";
-                PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, messageText);
-
-                if (mailBox.hasNext()) {
-                    message = mailBox.next();
-                    book.setPages(BookHelper.format(message));
-                    PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
-                } else {
-                    PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine weiteren Nachrichten.");
+            if (message != null && !message.isRead()) {
+                mailBox.markAsRead(message);
+                if (VinciCodeCore.dbHandler.setMessageRead(message)) {
+                    PlayerUtils.sendSuccess(event.getPlayer(), VinciCodeCore.NAME, "Die Nachricht wurde als gelesen markiert.");
                 }
             }
         }
@@ -142,6 +126,11 @@ public class ActionListener implements Listener {
                     Message message = mailBox.next();
                     book.setPages(BookHelper.format(message));
                     PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
+                    if (!message.isRead()) {
+                        PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "NEU");
+                    } else {
+                        PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "ALT");
+                    }
                 } else {
                     PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine weiteren Nachrichten.");
                 }
@@ -150,6 +139,11 @@ public class ActionListener implements Listener {
                     Message message = mailBox.prev();
                     book.setPages(BookHelper.format(message));
                     PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "Nachricht " + (mailBox.getIndex() + 1) + " von " + mailBox.getMessageCount());
+                    if (!message.isRead()) {
+                        PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "NEU");
+                    } else {
+                        PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, "ALT");
+                    }
                 } else {
                     PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine vorherigen Nachrichten.");
                 }
