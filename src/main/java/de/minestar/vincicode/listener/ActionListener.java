@@ -32,6 +32,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -139,7 +141,7 @@ public class ActionListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (VinciCodeCore.messageManger.hasNewMessage(event.getPlayer().getName())) {
             int newMessages = VinciCodeCore.messageManger.getNewMessageCount(event.getPlayer().getName());
@@ -149,6 +151,24 @@ public class ActionListener implements Listener {
             }
             message += ".";
             PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, message);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        this.removeMailBoxFromInventory(event.getPlayer());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerKick(PlayerKickEvent event) {
+        this.removeMailBoxFromInventory(event.getPlayer());
+    }
+
+    private void removeMailBoxFromInventory(Player player) {
+        int index = MailBox.findMailBox(player);
+        if (index != -1) {
+            ItemStack itemStack = player.getInventory().getItem(index);
+            player.getInventory().remove(itemStack);
         }
     }
 

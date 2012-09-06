@@ -21,11 +21,32 @@ package de.minestar.vincicode.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import de.minestar.minestarlibrary.bookapi.MinestarBook;
 import de.minestar.minestarlibrary.messages.Message;
 
 public class MailBox {
 
     public static final String MAIL_BOX_HEAD = "Ugly Post";
+
+    public static int findMailBox(Player player) {
+        Inventory inventory = player.getInventory();
+
+        ItemStack[] stacks = inventory.getContents();
+        for (int i = 0; i < stacks.length; i++) {
+            ItemStack itemStack = stacks[i];
+            if (itemStack != null && itemStack.getType().equals(Material.WRITTEN_BOOK)) {
+                MinestarBook book = MinestarBook.loadBook(itemStack);
+                if (book.getAuthor().equalsIgnoreCase(MailBox.MAIL_BOX_HEAD))
+                    return i;
+            }
+        }
+        return -1;
+    }
 
     private int index = 0;
     private ArrayList<Message> mailBox;

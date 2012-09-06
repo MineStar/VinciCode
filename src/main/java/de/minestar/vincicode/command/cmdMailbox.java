@@ -18,12 +18,10 @@
 
 package de.minestar.vincicode.command;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import de.minestar.minestarlibrary.bookapi.MinestarBook;
 import de.minestar.minestarlibrary.commands.AbstractCommand;
 import de.minestar.minestarlibrary.stats.StatisticHandler;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
@@ -41,7 +39,7 @@ public class cmdMailbox extends AbstractCommand {
     @Override
     public void execute(String[] args, Player player) {
         ItemStack mailBoxItem = null;
-        int index = findMailBox(player);
+        int index = MailBox.findMailBox(player);
         // PLAYER HAS MAILBOX IN INVENTORY
         // SWAP IT WITH CURRENT ITEM IN HAND
         if (index != -1) {
@@ -79,21 +77,6 @@ public class cmdMailbox extends AbstractCommand {
 
         // FIRE STATISTIC
         StatisticHandler.handleStatistic(new MailBoxStat(player.getName(), false));
-    }
-
-    private int findMailBox(Player player) {
-        Inventory inventory = player.getInventory();
-
-        ItemStack[] stacks = inventory.getContents();
-        for (int i = 0; i < stacks.length; i++) {
-            ItemStack itemStack = stacks[i];
-            if (itemStack != null && itemStack.getType().equals(Material.WRITTEN_BOOK)) {
-                MinestarBook book = MinestarBook.loadBook(itemStack);
-                if (book.getAuthor().equalsIgnoreCase(MailBox.MAIL_BOX_HEAD))
-                    return i;
-            }
-        }
-        return -1;
     }
 
     private boolean inventoryIsFull(Player player) {
