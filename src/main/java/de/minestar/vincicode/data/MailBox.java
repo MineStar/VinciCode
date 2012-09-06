@@ -70,6 +70,9 @@ public class MailBox {
     public void deleteCurrentMessage() {
         if (this.index >= 0 && this.index < this.mailBox.size()) {
             mailBox.remove(this.index);
+            if (this.index >= this.mailBox.size()) {
+                this.setIndex(this.mailBox.size() - 1);
+            }
         }
     }
 
@@ -110,7 +113,7 @@ public class MailBox {
         if (this.index >= 0 && this.index < this.mailBox.size()) {
             this.index = index;
         } else {
-            this.index = -1;
+            this.index = 0;
         }
     }
 

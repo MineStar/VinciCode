@@ -18,8 +18,13 @@
 
 package de.minestar.vincicode.listener;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,6 +44,32 @@ import de.minestar.vincicode.formatter.Formatter;
 
 public class ActionListener implements Listener {
 
+    private static HashSet<Action> validActions = new HashSet<Action>(Arrays.asList(Action.LEFT_CLICK_AIR, Action.LEFT_CLICK_BLOCK, Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK));
+
+    public void updateCurrentBook(Player player, MinestarBook book, MailBox mailBox) {
+        // get message and update it
+        Message message = mailBox.getCurrentMessage();
+        if (message != null) {
+            book.setPages(Formatter.format(message));
+            String text = "Nachricht ";
+            if (message.isRead()) {
+                text += "" + ChatColor.GOLD + (mailBox.getIndex() + 1) + ChatColor.GRAY;
+            } else {
+                text += "" + ChatColor.RED + (mailBox.getIndex() + 1) + ChatColor.GRAY;
+            }
+            text += " von " + mailBox.getMessageCount();
+            PlayerUtils.sendInfo(player, VinciCodeCore.NAME, text);
+        } else {
+            // clear pages
+            book.setPages(new ArrayList<String>());
+            PlayerUtils.sendError(player, VinciCodeCore.NAME, "Keine weiteren Nachrichten.");
+        }
+    }
+
+    private boolean isLeftClick(Action action) {
+        return action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK);
+    }
+
     private void swapItems(Inventory inventory, int oldSlot, int newSlot) {
         // SWAP ITEMS
         ItemStack newItem = inventory.getItem(newSlot);
@@ -54,7 +85,7 @@ public class ActionListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (!validActions.contains(event.getAction())) {
             return;
         }
 
@@ -75,11 +106,34 @@ public class ActionListener implements Listener {
                 return;
             }
 
-            Message message = mailBox.getCurrentMessage();
-            if (message != null && !message.isRead()) {
-                mailBox.markAsRead(message);
-                if (VinciCodeCore.dbHandler.setMessageRead(message)) {
-                    PlayerUtils.sendSuccess(event.getPlayer(), VinciCodeCore.NAME, "Die Nachricht wurde als gelesen markiert.");
+            // LEFTCLICK + SNEAK => DELETE CURRENT MESSAGE
+            // RIGHTCLICK => MARK MESSAGE AS READ
+
+            if (this.isLeftClick(event.getAction())) {
+                // players must sneak
+                if (!event.getPlayer().isSneaking()) {
+                    return;
+                }
+                // get message and update it
+                Message message = mailBox.getCurrentMessage();
+                if (message != null) {
+                    if (VinciCodeCore.dbHandler.deleteMessage(message)) {
+                        mailBox.deleteCurrentMessage();
+                        PlayerUtils.sendSuccess(event.getPlayer(), VinciCodeCore.NAME, "Die Nachricht wurde gelöscht.");
+
+                        // show next message
+                        message = mailBox.getCurrentMessage();
+                        this.updateCurrentBook(event.getPlayer(), book, mailBox);
+                    }
+                }
+            } else {
+                // get message and update it
+                Message message = mailBox.getCurrentMessage();
+                if (message != null && !message.isRead()) {
+                    mailBox.markAsRead(message);
+                    if (VinciCodeCore.dbHandler.setMessageRead(message)) {
+                        PlayerUtils.sendSuccess(event.getPlayer(), VinciCodeCore.NAME, "Die Nachricht wurde als gelesen markiert.");
+                    }
                 }
             }
         }
@@ -123,32 +177,15 @@ public class ActionListener implements Listener {
 
             if (forward) {
                 if (mailBox.hasNext()) {
-                    Message message = mailBox.next();
-                    book.setPages(Formatter.format(message));
-
-                    String text = "Nachricht ";
-                    if (message.isRead()) {
-                        text += "" + ChatColor.GOLD + (mailBox.getIndex() + 1) + ChatColor.GRAY;
-                    } else {
-                        text += "" + ChatColor.RED + (mailBox.getIndex() + 1) + ChatColor.GRAY;
-                    }
-                    text += " von " + mailBox.getMessageCount();
-                    PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, text);
+                    mailBox.next();
+                    this.updateCurrentBook(event.getPlayer(), book, mailBox);
                 } else {
                     PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine weiteren Nachrichten.");
                 }
             } else {
                 if (mailBox.hasPrev()) {
-                    Message message = mailBox.prev();
-                    book.setPages(Formatter.format(message));
-                    String text = "Nachricht ";
-                    if (message.isRead()) {
-                        text += "" + ChatColor.GOLD + (mailBox.getIndex() + 1) + ChatColor.GRAY;
-                    } else {
-                        text += "" + ChatColor.RED + (mailBox.getIndex() + 1) + ChatColor.GRAY;
-                    }
-                    text += " von " + mailBox.getMessageCount();
-                    PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, text);
+                    mailBox.prev();
+                    this.updateCurrentBook(event.getPlayer(), book, mailBox);
                 } else {
                     PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Keine vorherigen Nachrichten.");
                 }
