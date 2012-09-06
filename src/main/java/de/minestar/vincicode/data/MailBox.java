@@ -105,7 +105,7 @@ public class MailBox {
     }
 
     public boolean hasNewMessages() {
-        return newMessages;
+        return this.getNewMessageCount() > 0;
     }
 
     public void markAsRead(Message message) {

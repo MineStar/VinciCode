@@ -151,6 +151,7 @@ public class ActionListener implements Listener {
             }
             message += ".";
             PlayerUtils.sendInfo(event.getPlayer(), VinciCodeCore.NAME, message);
+            PlayerUtils.sendInfo(event.getPlayer(), "Gib \"/mailbox\" ein...");
         }
     }
 
