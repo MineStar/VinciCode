@@ -59,7 +59,6 @@ public class MessageManager {
             return true;
         } else
             return handleOfflineMessage(message);
-
     }
 
     public boolean handleOfflineMessage(Message message) {

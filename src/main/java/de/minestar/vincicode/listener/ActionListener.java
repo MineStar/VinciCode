@@ -175,10 +175,28 @@ public class ActionListener implements Listener {
 
     @EventHandler
     public void onItemHeldChange(PlayerItemHeldEvent event) {
+
+        ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getNewSlot());
+
+        // update the book, if we have a VinciBook
+        if (itemStack != null && itemStack.getType().equals(Material.WRITTEN_BOOK)) {
+            MinestarBook book = MinestarBook.loadBook(itemStack);
+            // get mailbox
+            MailBox mailBox = VinciCodeCore.messageManger.getMailBox(event.getPlayer().getName());
+            if (mailBox == null) {
+                PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Du hast keine Nachrichten!");
+                return;
+            }
+
+            this.updateCurrentBook(event.getPlayer(), book, mailBox);
+            return;
+        }
+
+        // player must sneak
         if (!event.getPlayer().isSneaking())
             return;
 
-        ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
+        itemStack = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
         if (itemStack == null || !itemStack.getType().equals(Material.WRITTEN_BOOK))
             return;
 
