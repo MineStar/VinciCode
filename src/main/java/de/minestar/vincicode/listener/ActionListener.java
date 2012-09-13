@@ -29,6 +29,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -174,22 +175,38 @@ public class ActionListener implements Listener {
     }
 
     @EventHandler
-    public void onItemHeldChange(PlayerItemHeldEvent event) {
-
-        ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getNewSlot());
+    public void onItemDrop(PlayerDropItemEvent event) {
+        ItemStack itemStack = event.getItemDrop().getItemStack();
 
         // update the book, if we have a VinciBook
         if (itemStack != null && itemStack.getType().equals(Material.WRITTEN_BOOK)) {
             MinestarBook book = MinestarBook.loadBook(itemStack);
             // get mailbox
-            MailBox mailBox = VinciCodeCore.messageManger.getMailBox(event.getPlayer().getName());
-            if (mailBox == null) {
-                PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Du hast keine Nachrichten!");
+            if (book.getAuthor().equalsIgnoreCase(MailBox.MAIL_BOX_HEAD)) {
+                event.getItemDrop().setItemStack(null);
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onItemHeldChange(PlayerItemHeldEvent event) {
+        ItemStack itemStack = event.getPlayer().getInventory().getItem(event.getNewSlot());
+
+        // update the book, if we have a VinciBook
+        if (itemStack != null && itemStack.getType().equals(Material.WRITTEN_BOOK)) {
+            MinestarBook book = MinestarBook.loadBook(itemStack);
+            if (book.getAuthor().equalsIgnoreCase(MailBox.MAIL_BOX_HEAD)) {
+                // get mailbox
+                MailBox mailBox = VinciCodeCore.messageManger.getMailBox(event.getPlayer().getName());
+                if (mailBox == null) {
+                    book.setPages(new ArrayList<String>());
+                    PlayerUtils.sendError(event.getPlayer(), VinciCodeCore.NAME, "Du hast keine Nachrichten!");
+                    return;
+                }
+                this.updateCurrentBook(event.getPlayer(), book, mailBox);
                 return;
             }
-
-            this.updateCurrentBook(event.getPlayer(), book, mailBox);
-            return;
         }
 
         // player must sneak
