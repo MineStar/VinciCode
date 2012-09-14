@@ -25,20 +25,20 @@ import java.util.List;
 import java.util.Map;
 
 import de.minestar.minestarlibrary.messages.Message;
-import de.minestar.minestarlibrary.messages.OfficialMessage;
+import de.minestar.minestarlibrary.messages.MessageType;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.vincicode.core.VinciCodeCore;
 import de.minestar.vincicode.util.BookHelper;
 
 public class Formatter {
 
-    private static Map<Class<? extends Message>, MessageFormat> formatMap = new HashMap<Class<? extends Message>, MessageFormat>();
+    private static Map<MessageType, MessageFormat> formatMap = new HashMap<MessageType, MessageFormat>();
     private static Map<Class<? extends MessageFormat>, MessageFormat> instanceMap = new HashMap<Class<? extends MessageFormat>, MessageFormat>();
 
     static {
-        formatMap.put(Message.class, getInstance(DefaultFormat.class));
+        formatMap.put(MessageType.DEFAULT, getInstance(DefaultFormat.class));
 
-        formatMap.put(OfficialMessage.class, getInstance(OfficialFormat.class));
+        formatMap.put(MessageType.OFFICIAL, getInstance(OfficialFormat.class));
     }
 
     private static MessageFormat getInstance(Class<? extends MessageFormat> format) {
@@ -56,7 +56,7 @@ public class Formatter {
     }
 
     public static List<String> format(Message message) {
-        MessageFormat format = formatMap.get(message.getClass());
+        MessageFormat format = formatMap.get(message.getType());
         if (format == null) {
             format = getInstance(DefaultFormat.class);
             if (format == null) {

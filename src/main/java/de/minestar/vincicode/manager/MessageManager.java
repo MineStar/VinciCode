@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -52,18 +53,37 @@ public class MessageManager {
     }
 
     public boolean handleMessage(Message message) {
-        String targetName = message.getTarget();
+        String targetName = message.getReceiver();
         Player player = Bukkit.getPlayerExact(targetName);
         if (player != null && player.isOnline()) {
-            PlayerUtils.sendBlankMessage(player, message.getCompleteMessage());
+            handleOnlineMessage(player, message);
             return true;
         } else
             return handleOfflineMessage(message);
 
     }
 
+    private void handleOnlineMessage(Player player, Message message) {
+        switch (message.getType()) {
+            case DEFAULT :
+                PlayerUtils.sendMessage(player, ChatColor.AQUA, "[" + message.getSender() + "] : " + message.getText());
+            case OFFICIAL :
+                PlayerUtils.sendBlankMessage(player, "[" + message.getSender() + "] : " + message.getText());
+                break;
+            case INFO :
+                PlayerUtils.sendInfo(player, message.getSender(), message.getText());
+                break;
+            case ERROR :
+                PlayerUtils.sendError(player, message.getSender(), message.getText());
+                break;
+            case SUCCESS :
+                PlayerUtils.sendSuccess(player, message.getSender(), message.getText());
+                break;
+        }
+    }
+
     public boolean handleOfflineMessage(Message message) {
-        String targetName = message.getTarget();
+        String targetName = message.getReceiver();
         MailBox mailBox = mailBoxMap.get(targetName.toLowerCase());
         // PLAYER HAS NO MAIL BOX
         if (mailBox == null) {

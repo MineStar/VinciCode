@@ -26,11 +26,10 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.ChatColor;
-
 import de.minestar.minestarlibrary.database.AbstractMySQLHandler;
 import de.minestar.minestarlibrary.database.DatabaseUtils;
 import de.minestar.minestarlibrary.messages.Message;
+import de.minestar.minestarlibrary.messages.MessageType;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
 import de.minestar.vincicode.core.VinciCodeCore;
 import de.minestar.vincicode.data.MailBox;
@@ -48,11 +47,11 @@ public class DatabaseHandler extends AbstractMySQLHandler {
 
     @Override
     protected void createStatements(String pluginName, Connection con) throws Exception {
-        addMessage = con.prepareStatement("INSERT INTO message (sender, target, prefix, message, prefixColor, messageColor, timestamp, isOfficial, isRead) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        addMessage = con.prepareStatement("INSERT INTO message (sender, receiver, timestamp, type, text, isRead) VALUES (?, ?, ?, ?, ?, ?)");
 
-        deleteMessage = con.prepareStatement("DELETE FROM message WHERE timestamp = ? AND sender = ? AND target = ?");
+        deleteMessage = con.prepareStatement("DELETE FROM message WHERE timestamp = ? AND sender = ? AND receiver = ?");
 
-        updateMessageRead = con.prepareStatement("UPDATE message SET isRead = ? WHERE timestamp = ? AND sender = ? AND target = ?");
+        updateMessageRead = con.prepareStatement("UPDATE message SET isRead = ? WHERE timestamp = ? AND sender = ? AND receiver = ?");
     }
 
     // MESSAGES //
@@ -65,37 +64,31 @@ public class DatabaseHandler extends AbstractMySQLHandler {
 
         try {
             Statement st = dbConnection.getConnection().createStatement();
-            ResultSet rs = st.executeQuery("SELECT sender, target, prefix, message, prefixColor, messageColor, timestamp, isOfficial, isRead FROM message ORDER BY target, timestamp");
+            ResultSet rs = st.executeQuery("SELECT sender, receiver, timestamp, type, text, isRead FROM message ORDER BY receiver, timestamp");
 
-            String target = "";
             String sender;
-            String prefix;
-            String message;
-            String prefixColor;
-            String messageColor;
+            String receiver;
             long timestamp;
-            boolean isOfficial;
+            MessageType type;
+            String text;
             boolean isRead;
 
             MailBox mailBox;
 
             while (rs.next()) {
                 sender = rs.getString(1);
-                target = rs.getString(2);
-                prefix = rs.getString(3);
-                message = rs.getString(4);
-                prefixColor = rs.getString(5);
-                messageColor = rs.getString(6);
-                timestamp = rs.getLong(7);
-                isOfficial = rs.getBoolean(8);
-                isRead = rs.getBoolean(9);
+                receiver = rs.getString(2);
+                timestamp = rs.getLong(3);
+                type = MessageType.get(rs.getInt(4));
+                text = rs.getString(5);
+                isRead = rs.getBoolean(6);
 
-                mailBox = mailBoxMap.get(target.toLowerCase());
+                mailBox = mailBoxMap.get(receiver.toLowerCase());
                 if (mailBox == null) {
                     mailBox = new MailBox();
-                    mailBoxMap.put(target.toLowerCase(), mailBox);
+                    mailBoxMap.put(receiver.toLowerCase(), mailBox);
                 }
-                mailBox.add(new Message(sender, target, prefix, message, ChatColor.getByChar(prefixColor), ChatColor.getByChar(messageColor), timestamp, isOfficial, isRead));
+                mailBox.add(new Message(sender, receiver, text, type, timestamp, isRead));
 
             }
         } catch (Exception e) {
@@ -109,14 +102,11 @@ public class DatabaseHandler extends AbstractMySQLHandler {
     public boolean addMessage(Message message) {
         try {
             addMessage.setString(1, message.getSender());
-            addMessage.setString(2, message.getTarget());
-            addMessage.setString(3, message.getPrefix());
-            addMessage.setString(4, message.getMessage());
-            addMessage.setString(5, message.getPrefixColor().getChar() + "");
-            addMessage.setString(6, message.getMessageColor().getChar() + "");
-            addMessage.setLong(7, message.getTimestamp());
-            addMessage.setBoolean(8, message.isOfficial());
-            addMessage.setBoolean(9, message.isRead());
+            addMessage.setString(2, message.getReceiver());
+            addMessage.setLong(3, message.getTimestamp());
+            addMessage.setInt(4, message.getType().ordinal());
+            addMessage.setString(5, message.getText());
+            addMessage.setBoolean(6, message.isRead());
 
             return addMessage.executeUpdate() == 1;
         } catch (Exception e) {
@@ -129,7 +119,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
         try {
             deleteMessage.setLong(1, message.getTimestamp());
             deleteMessage.setString(2, message.getSender());
-            deleteMessage.setString(3, message.getTarget());
+            deleteMessage.setString(3, message.getReceiver());
             return deleteMessage.executeUpdate() == 1;
         } catch (Exception e) {
             ConsoleUtils.printException(e, VinciCodeCore.NAME, "Can't delete message from database! Message =" + message);
@@ -142,7 +132,7 @@ public class DatabaseHandler extends AbstractMySQLHandler {
             updateMessageRead.setBoolean(1, message.isRead());
             updateMessageRead.setLong(2, message.getTimestamp());
             updateMessageRead.setString(3, message.getSender());
-            updateMessageRead.setString(4, message.getTarget());
+            updateMessageRead.setString(4, message.getReceiver());
             return updateMessageRead.executeUpdate() == 1;
         } catch (Exception e) {
             ConsoleUtils.printException(e, VinciCodeCore.NAME, "Can't set message read status to database! Message =" + message);

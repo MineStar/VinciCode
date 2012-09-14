@@ -149,7 +149,7 @@ public class MailBox {
         StringBuilder sBuilder = new StringBuilder(mailBox.size() * 32);
         sBuilder.append('[');
         for (Message msg : mailBox) {
-            sBuilder.append(msg.getCompleteMessage());
+            sBuilder.append(msg);
             sBuilder.append(", ");
         }
 

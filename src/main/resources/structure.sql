@@ -3,14 +3,13 @@
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `message` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `sender` TEXT NOT NULL ,
-  `target` TEXT NOT NULL ,
-  `prefix` TEXT NOT NULL ,
-  `message` TEXT NOT NULL ,
-  `prefixColor` TEXT NOT NULL ,
-  `messageColor` TEXT NOT NULL ,
+  `sender` VARCHAR(255) NOT NULL ,
+  `receiver` VARCHAR(255) NOT NULL ,
   `timestamp` BIGINT NOT NULL ,
-  `isOfficial` TINYINT(1) NOT NULL ,
+  `type` TINYINT NOT NULL ,
+  `text` TEXT NOT NULL ,
   `isRead` TINYINT(1) NOT NULL ,
-  PRIMARY KEY (`id`) )
+  PRIMARY KEY (`id`) ,
+  INDEX `sender` (`sender` ASC) ,
+  INDEX `target` (`target` ASC) )
 ENGINE = InnoDB;

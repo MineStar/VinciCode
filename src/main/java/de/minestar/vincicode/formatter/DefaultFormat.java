@@ -54,7 +54,7 @@ public class DefaultFormat implements MessageFormat {
 
     @Override
     public String formatBody(Message message) {
-        return message.getMessage();
+        return message.getText();
     }
 
 }

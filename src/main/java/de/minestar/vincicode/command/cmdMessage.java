@@ -23,7 +23,9 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import de.minestar.minestarlibrary.commands.AbstractExtendedCommand;
+import de.minestar.minestarlibrary.messages.DefaultMessage;
 import de.minestar.minestarlibrary.messages.Message;
+import de.minestar.minestarlibrary.messages.OfficialMessage;
 import de.minestar.minestarlibrary.stats.StatisticHandler;
 import de.minestar.minestarlibrary.utils.ChatUtils;
 import de.minestar.minestarlibrary.utils.ConsoleUtils;
@@ -49,7 +51,7 @@ public class cmdMessage extends AbstractExtendedCommand {
                 return;
             }
             // SAVE MESSAGE TO SEND HIM WHEN PLAYER IS ONLINE
-            Message message = new Message(player.getName(), targetName, ChatColor.WHITE, ChatUtils.getMessage(args, 1));
+            Message message = new DefaultMessage(player.getName(), targetName, ChatUtils.getMessage(args, 1));
             if (VinciCodeCore.messageManger.handleOfflineMessage(message))
                 PlayerUtils.sendInfo(player, pluginName, "Spieler '" + targetName + "' ist offline. Er erhält die Nachricht, wenn er online ist.");
             else
@@ -88,7 +90,7 @@ public class cmdMessage extends AbstractExtendedCommand {
                 return;
             }
             // SAVE MESSAGE TO SEND HIM WHEN PLAYER IS ONLINE
-            Message message = new Message(":ugly:", targetName, ChatColor.WHITE, ChatUtils.getMessage(args, 1));
+            Message message = new OfficialMessage(":ugly:", targetName, ChatUtils.getMessage(args, 1));
             if (VinciCodeCore.messageManger.handleOfflineMessage(message))
                 ConsoleUtils.printInfo(pluginName, "Spieler '" + targetName + "' ist offline. Er erhält die Nachricht, wenn er online ist.");
             else

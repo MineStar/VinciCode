@@ -22,6 +22,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import de.minestar.minestarlibrary.commands.AbstractExtendedCommand;
+import de.minestar.minestarlibrary.messages.DefaultMessage;
 import de.minestar.minestarlibrary.messages.Message;
 import de.minestar.minestarlibrary.stats.StatisticHandler;
 import de.minestar.minestarlibrary.utils.ChatUtils;
@@ -45,7 +46,7 @@ public class cmdReply extends AbstractExtendedCommand {
 
         if (!target.isOnline()) {
             // SEND OFFLINE MESSAGE
-            Message message = new Message(player.getName(), target.getName(), ChatColor.WHITE, ChatUtils.getMessage(args, 1));
+            Message message = new DefaultMessage(player.getName(), target.getName(), ChatUtils.getMessage(args, 1));
             if (VinciCodeCore.messageManger.handleOfflineMessage(message))
                 PlayerUtils.sendInfo(player, pluginName, "Spieler '" + target.getName() + "' ist offline. Er erhält die Nachricht, wenn er online ist.");
             else
