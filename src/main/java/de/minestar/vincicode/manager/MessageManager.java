@@ -60,7 +60,6 @@ public class MessageManager {
             return true;
         } else
             return handleOfflineMessage(message);
-
     }
 
     private void handleOnlineMessage(Player player, Message message) {
