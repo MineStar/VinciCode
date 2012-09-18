@@ -19,6 +19,7 @@
 package de.minestar.vincicode.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -28,9 +29,11 @@ import org.bukkit.inventory.ItemStack;
 
 import de.minestar.minestarlibrary.bookapi.MinestarBook;
 import de.minestar.minestarlibrary.messages.Message;
+import de.minestar.minestarlibrary.messages.MessageComparator;
 
 public class MailBox {
 
+    private static final MessageComparator comparator = new MessageComparator();
     public static final String MAIL_BOX_HEAD = "Ugly Post";
 
     public static int findMailBox(Player player) {
@@ -49,7 +52,7 @@ public class MailBox {
     }
 
     private int index = 0;
-    private ArrayList<Message> mailBox;
+    private List<Message> mailBox;
 
     private boolean newMessages;
 
@@ -86,6 +89,7 @@ public class MailBox {
     public void add(Message message) {
         mailBox.add(message);
         this.newMessages = this.newMessages || !message.isRead();
+        Collections.sort(mailBox, MailBox.comparator);
     }
 
     public void deleteCurrentMessage() {

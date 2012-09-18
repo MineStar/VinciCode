@@ -11,5 +11,5 @@ CREATE  TABLE IF NOT EXISTS `message` (
   `isRead` TINYINT(1) NOT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `sender` (`sender` ASC) ,
-  INDEX `target` (`target` ASC) )
+  INDEX `target` (`receiver` ASC) )
 ENGINE = InnoDB;
